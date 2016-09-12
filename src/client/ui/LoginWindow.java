@@ -1,14 +1,18 @@
 package client.ui;
 
 
+import client.logic.SenderClient;
+
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
-
 import java.awt.*;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-import static client.Constants.*;
+import static client.Constants.PROG_TITLE;
 
 /**
  * Created by vvrud on 10.09.16.
@@ -18,77 +22,37 @@ public class LoginWindow extends JFrame {
 
     private static String ip;
     private static int port;
+    private static boolean connectionSuccess = false;
+    private final JPanel loginWindow = new JPanel(new GridBagLayout());
 
     public LoginWindow() {
         super(PROG_TITLE);
 
-        final JPanel content = new JPanel(new GridBagLayout());
-
-        JLabel text = new JLabel("Enter server IP and PORT to connect");
-        text.setFont(new Font("Arial", Font.BOLD, 16));
-        content.add(text, new GridBagConstraints(0, 0, 3, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(5, 5, 5, 5), 1, 1));
-
-        JLabel ipLabel = new JLabel("IP:");
         JTextField ipField = new JTextField(10);
-
-        content.add(ipLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
-        content.add(ipField, new GridBagConstraints(1, 1, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-
-        ipField.setDocument(new PlainDocument() {
-            String chars = "0123456789.";
-            @Override
-            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-                if (chars.contains(str)) {
-                    if (getLength()< 15) {
-                        super.insertString(offs, str, a);
-                    }
-                }
-            }
-        });
-
-        JLabel portLabel = new JLabel("PORT:");
         JTextField portField = new JTextField(5);
-
-        content.add(portLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
-        content.add(portField, new GridBagConstraints(1, 2, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-
-        portField.setDocument(new PlainDocument() {
-            String chars = "0123456789";
-            @Override
-            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-                if (chars.contains(str)) {
-                    if (getLength()< 5) {
-                        super.insertString(offs, str, a);
-                    }
-                }
-            }
-        });
-
         JButton btnConnect = new JButton("CONNECT");
-        content.add(btnConnect, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets(5, 5, 5, 5), 0, 0));
 
-        content.setBorder(BorderFactory.createLineBorder(Color.red));
-        getContentPane().add(content, BorderLayout.CENTER);
+        createPanel(ipField, portField, btnConnect);
+        addTextCheck(ipField, portField);
+
+        loginWindow.setBorder(BorderFactory.createLineBorder(Color.red));
+        getContentPane().add(loginWindow, BorderLayout.CENTER);
         pack();
+        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        //Add button listener
         btnConnect.addActionListener(l -> {
-            boolean ipPortSuccess = true;
-            boolean connectionSuccess = true;
+            boolean ipPortSuccess;
 
+            //Get IP and port from JTextFields
             ip = ipField.getText();
             try {
                 port = Integer.parseInt(portField.getText());
                 ipPortSuccess = true;
             } catch (NumberFormatException numErr) {
-                JOptionPane.showMessageDialog(content, "ERROR. Can't find PORT. Check your PORT.",
+                JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't find PORT. Check your PORT.",
                         "ERROR", JOptionPane.ERROR_MESSAGE);
                 ipPortSuccess = false;
             }
@@ -96,36 +60,97 @@ public class LoginWindow extends JFrame {
             System.out.println(ip); //Заглушка
             System.out.println(port); //Заглушка
 
-            //TODO uncomment connection to server
-//            if (ipPortSuccess) {
-//                try {
-//                    Socket socket = new Socket(ip, port);
-//                    connectionSuccess = true;
-//                } catch (UnknownHostException hostErr) {
-//                    JOptionPane.showMessageDialog(content, "ERROR. Can't connect to server. Check your IP.",
-//                            "ERROR", JOptionPane.ERROR_MESSAGE);
-//                    connectionSuccess = false;
-//                } catch (IOException ioErr) {
-//                    JOptionPane.showMessageDialog(content, "ERROR. Can't connect to server. Check your PORT.",
-//                            "ERROR", JOptionPane.ERROR_MESSAGE);
-//                    connectionSuccess = false;
-//                }
-//            }
-
-            if (connectionSuccess) {
-
+            //Try connect to socket
+            if (ipPortSuccess) {
+                try {
+                    SenderClient.setSocket(new Socket(ip, port));
+                    connectionSuccess = true;
+                } catch (UnknownHostException hostErr) {
+                    JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't connect to server. Check your IP.",
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
+                    connectionSuccess = false;
+                } catch (IOException ioErr) {
+                    JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't connect to server. Check your PORT.",
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
+                    connectionSuccess = false;
+                }
             }
 
+            //Set fields empty
             ipField.setText("");
             portField.setText("");
         });
+
     }
 
-    public static String getIp() {
+    public static boolean isConnectionSuccess() {
+        return connectionSuccess;
+    }
+
+    static String getIp() {
         return ip;
     }
 
-    public static int getPort() {
+    static int getPort() {
         return port;
+    }
+
+    private void addTextCheck(JTextField ipField, JTextField portField) {
+        //IP must contain only 123456789.
+        ipField.setDocument(new PlainDocument() {
+            String chars = "0123456789.";
+
+            @Override
+            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+                if (chars.contains(str)) {
+                    if (getLength() < 15) {
+                        super.insertString(offs, str, a);
+                    }
+                }
+            }
+        });
+
+        //Port must contain only 123456789
+        portField.setDocument(new PlainDocument() {
+            String chars = "0123456789";
+
+            @Override
+            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+                if (chars.contains(str)) {
+                    if (getLength() < 5) {
+                        super.insertString(offs, str, a);
+                    }
+                }
+            }
+        });
+    }
+
+    private void createPanel(JTextField ipField, JTextField portField, JButton btnConnect) {
+        //Add JLabel with text
+        JLabel text = new JLabel("Enter server IP and PORT to connect");
+        text.setFont(new Font("Arial", Font.BOLD, 14));
+        loginWindow.add(text, new GridBagConstraints(0, 0, 3, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(5, 5, 5, 5), 1, 1));
+
+        JLabel ipLabel = new JLabel("IP:");
+        loginWindow.add(ipLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+        loginWindow.add(ipField, new GridBagConstraints(1, 1, 2, 1, 0, 0,
+                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+
+        JLabel portLabel = new JLabel("PORT:");
+        loginWindow.add(portLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+        loginWindow.add(portField, new GridBagConstraints(1, 2, 1, 1, 0, 0,
+                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+
+        loginWindow.add(btnConnect, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 5), 0, 0));
+
+        //Set correct sizes
+        ipLabel.setPreferredSize(btnConnect.getPreferredSize());
+        ipField.setPreferredSize(btnConnect.getPreferredSize());
+        portLabel.setPreferredSize(btnConnect.getPreferredSize());
+        portField.setPreferredSize(btnConnect.getPreferredSize());
     }
 }
