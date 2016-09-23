@@ -31,6 +31,7 @@ class Interrupter extends Thread {
             if (printingInterrupted) {
                 interruptPrinting();
             }
+
         }
     }
 
