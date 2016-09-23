@@ -1,21 +1,24 @@
 package client.ui;
 
 
-import client.logic.SenderClient;
+import client.logic.PrintingData;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import static client.Constants.PROG_TITLE;
+import static client.Constants.*;
 
 /**
  * Created by vvrud on 10.09.16.
+ * @author VVRud
  * This class shows first login window in my soft.
  */
 public class LoginWindow extends JFrame {
@@ -26,14 +29,15 @@ public class LoginWindow extends JFrame {
     private final JPanel loginWindow = new JPanel(new GridBagLayout());
 
     public LoginWindow() {
-        super(PROG_TITLE);
+        super(TITLE);
 
         JTextField ipField = new JTextField(10);
         JTextField portField = new JTextField(5);
         JButton btnConnect = new JButton("CONNECT");
 
+        //TODO открыть корректировку ввода
         createPanel(ipField, portField, btnConnect);
-        addTextCheck(ipField, portField);
+        //addTextCheck(ipField, portField);
 
         loginWindow.setBorder(BorderFactory.createLineBorder(Color.red));
         getContentPane().add(loginWindow, BorderLayout.CENTER);
@@ -57,14 +61,15 @@ public class LoginWindow extends JFrame {
                 ipPortSuccess = false;
             }
 
-            System.out.println(ip); //Заглушка
-            System.out.println(port); //Заглушка
-
             //Try connect to socket
             if (ipPortSuccess) {
+                //TODO УБРАТЬ ЗАГЛУШКУ ПЕРЕХОДА
+                connectionSuccess = true;
                 try {
-                    SenderClient.setSocket(new Socket(ip, port));
+                    PrintingData.setSocket(new Socket(ip, port));
                     connectionSuccess = true;
+                    PrintingData.setDataOutput(new DataOutputStream(PrintingData.getSocket().getOutputStream()));
+                    PrintingData.setDataInput(new DataInputStream(PrintingData.getSocket().getInputStream()));
                 } catch (UnknownHostException hostErr) {
                     JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't connect to server. Check your IP.",
                             "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -137,12 +142,14 @@ public class LoginWindow extends JFrame {
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
         loginWindow.add(ipField, new GridBagConstraints(1, 1, 2, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        ipField.setToolTipText("Default IP is: " + DEFAULT_IP);
 
         JLabel portLabel = new JLabel("PORT:");
         loginWindow.add(portLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
         loginWindow.add(portField, new GridBagConstraints(1, 2, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        portField.setToolTipText("Default port is: " + DEFAULT_PORT);
 
         loginWindow.add(btnConnect, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
                 new Insets(5, 5, 5, 5), 0, 0));

@@ -7,6 +7,8 @@ import static client.Constants.CELL_SIZE;
 
 /**
  * Created by vvrud on 12.09.16.
+ * @author VVRud
+ * This class creates visual progress table, that is shown on the Worcspace window.
  */
 class VisualProgress extends JTable {
 
