@@ -1,8 +1,8 @@
 package server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import server.io.GetterServer;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -19,6 +19,8 @@ public class Server {
     private static Socket serverSocket;
     private static DataInputStream dataInput;
     private static DataOutputStream dataOutput;
+    private static ObjectInputStream objectInput;
+    private static ObjectOutputStream objectOutput;
 
     public static void main(String[] args) {
         int port = 6565;
@@ -31,31 +33,32 @@ public class Server {
             System.out.println();
 
             dataInput = new DataInputStream(serverSocket.getInputStream());
-            dataOutput = new DataOutputStream(serverSocket.getOutputStream());
+            objectInput = new ObjectInputStream(dataInput);
+            objectOutput = new ObjectOutputStream(new DataOutputStream(serverSocket.getOutputStream()));
 
             GetterServer getter = new GetterServer();
             System.out.println("Getter started!");
             getter.start();
-
-            SenderServer sender = new SenderServer();
-            System.out.println("Sender started!");
-            sender.start();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    static Socket getServerSocket() {
-        return serverSocket;
-    }
-
-    static DataInputStream getDataInput() {
+    public static DataInputStream getDataInput() {
         return dataInput;
     }
 
     static DataOutputStream getDataOutput() {
         return dataOutput;
     }
+
+    public static ObjectInputStream getObjectInput() {
+        return objectInput;
+    }
+
+    public static ObjectOutputStream getObjectOutput() {
+        return objectOutput;
+    }
+
 }

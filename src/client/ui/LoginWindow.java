@@ -1,20 +1,18 @@
 package client.ui;
 
 
-import client.logic.PrintingData;
+import client.Client;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import static client.Constants.*;
+import static client.data.Constants.*;
 
 /**
  * Created by vvrud on 10.09.16.
@@ -56,8 +54,7 @@ public class LoginWindow extends JFrame {
                 port = Integer.parseInt(portField.getText());
                 ipPortSuccess = true;
             } catch (NumberFormatException numErr) {
-                JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't find PORT. Check your PORT.",
-                        "ERROR", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(loginWindow, PORT_NUM_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
                 ipPortSuccess = false;
             }
 
@@ -66,17 +63,23 @@ public class LoginWindow extends JFrame {
                 //TODO УБРАТЬ ЗАГЛУШКУ ПЕРЕХОДА
                 connectionSuccess = true;
                 try {
-                    PrintingData.setSocket(new Socket(ip, port));
+                    Client.setSocket(new Socket(ip, port));
                     connectionSuccess = true;
-                    PrintingData.setDataOutput(new DataOutputStream(PrintingData.getSocket().getOutputStream()));
-                    PrintingData.setDataInput(new DataInputStream(PrintingData.getSocket().getInputStream()));
+
+                    Socket socket = Client.getSocket();
+                    DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream());
+
+                    Client.setDataOutput(dataOutput);
+                    Client.setObjectOutput(new ObjectOutputStream(dataOutput));
+                    Client.setObjectInput(new ObjectInputStream(new DataInputStream(socket.getInputStream())));
                 } catch (UnknownHostException hostErr) {
-                    JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't connect to server. Check your IP.",
-                            "ERROR", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(loginWindow, IP_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
                     connectionSuccess = false;
                 } catch (IOException ioErr) {
-                    JOptionPane.showMessageDialog(loginWindow, "ERROR. Can't connect to server. Check your PORT.",
-                            "ERROR", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(loginWindow, PORT_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
+                    connectionSuccess = false;
+                } catch (IllegalArgumentException ilArgErr) {
+                    JOptionPane.showMessageDialog(loginWindow, PORT_ILLEGAL_ARG_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
                     connectionSuccess = false;
                 }
             }

@@ -1,5 +1,7 @@
 package server;
 
+import server.io.GetterServer;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -8,12 +10,16 @@ import java.io.IOException;
  *
  * @author VVRud
  */
-class Interrupter extends Thread {
+public class Interrupter extends Thread {
 
-    private boolean printingInterrupted;
+    private static boolean printingInterrupted;
 
-    Interrupter(boolean printingInterrupted) {
-        this.printingInterrupted = printingInterrupted;
+    public Interrupter(boolean printingInterrupted) {
+        Interrupter.printingInterrupted = printingInterrupted;
+    }
+
+    static boolean isPrintingInterrupted() {
+        return printingInterrupted;
     }
 
     @Override
@@ -36,7 +42,10 @@ class Interrupter extends Thread {
     }
 
     private void interruptPrinting() {
-        //TODO Interrupt printing
-        System.out.println("I'm INTERRUPTED");
+        Printer printer = GetterServer.getPrinter();
+        printer.interrupt();
+        GetterServer getter = new GetterServer();
+        getter.start();
+        System.out.println("Printing was interrupted!");
     }
 }

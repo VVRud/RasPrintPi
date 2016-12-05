@@ -1,4 +1,6 @@
-package client;
+package client.data;
+
+import java.awt.*;
 
 /**
  * Created by vvrud on 10.09.16.
@@ -8,17 +10,22 @@ package client;
  * will be made for all program.
  */
 public class Constants {
+
     public static final String TITLE = "RasPrintPi";
-    public static final int CELL_SIZE = 5;
+    public static final Dimension CANVAS_SIZE = new Dimension(420, 420);
+
     //TODO Set default ip and port
     public static final String DEFAULT_IP = "localhost";
     public static final String DEFAULT_PORT = "6565";
 
-    //TODO Set default speed, mode and intensity
-    public static final float DEFAULT_SPEED = 0.4f;
-    public static final String DEFAULT_MODE = "defaultMode";
-    public static final float DEFAULT_INTENSITY = 0.4f;
+    //Errors
+    public static final String ERR_TITLE = "ERROR!";
+    public static final String IP_ERR = "ERROR! Can't connect to server. Check your IP, please.";
+    public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
+    public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
+    public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
 
+    //Data
     public static final String[] SPEED_DATA = {
             "0.4",
             "0.5",

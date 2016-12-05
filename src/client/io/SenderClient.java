@@ -1,12 +1,9 @@
-package client.logic;
+package client.io;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
+import client.Client;
+import client.data.PrintingData;
 
-import static client.Constants.*;
+import java.io.*;
 
 /**
  * Created by vvrud on 12.09.16.
@@ -16,26 +13,23 @@ import static client.Constants.*;
  */
 public class SenderClient extends Thread {
 
-    private static void sendOptions(DataOutputStream dataOutput) throws IOException {
-        HashMap<String, String> options = PrintingData.getOptions();
+    private static void sendOptions(ObjectOutputStream objectOutput) throws IOException {
+        objectOutput.writeObject(PrintingData.getOptions());
 
-        dataOutput.writeUTF(options.getOrDefault("speed", String.valueOf(DEFAULT_SPEED)));
-        dataOutput.writeUTF(options.getOrDefault("mode", DEFAULT_MODE));
-        dataOutput.writeUTF(options.getOrDefault("intensity", String.valueOf(DEFAULT_INTENSITY)));
-
-        dataOutput.flush();
+        objectOutput.flush();
     }
 
     @Override
     public void run() {
         boolean printingInterrupted = PrintingData.isPrintingInterrupted();
 
-        DataOutputStream dataOutput = PrintingData.getDataOutput();
+        DataOutputStream dataOutput = Client.getDataOutput();
+        ObjectOutputStream objectOutput = Client.getObjectOutput();
 
         if (!printingInterrupted) {
             try {
                 dataOutput.writeBoolean(printingInterrupted);
-                sendOptions(dataOutput);
+                sendOptions(objectOutput);
                 sendFile(dataOutput);
             } catch (IOException e) {
                 System.out.println("Failed sending interruption false with file and options");
@@ -44,7 +38,7 @@ public class SenderClient extends Thread {
         } else {
             try {
                 dataOutput.writeBoolean(printingInterrupted);
-                System.out.println("interruption sent");
+                System.out.println("Interruption sent");
             } catch (IOException e) {
                 System.out.println("Failed sending interruption true");
                 e.printStackTrace();
@@ -67,15 +61,6 @@ public class SenderClient extends Thread {
         while ((in = input.read(buffer)) != -1) {
             dataOutput.write(buffer, 0, in);
         }
-
-//        while(true) {
-//            int receivedBytes = input.read(buffer);
-//            if (receivedBytes == -1) {
-//                dataOutput.write(-1);
-//                break;
-//            }
-//            if (receivedBytes >= 0) dataOutput.write(buffer, 0, receivedBytes);
-//        }
 
         input.close();
         dataOutput.flush();

@@ -1,9 +1,12 @@
-package server;
+package server.io;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import server.Interrupter;
+import server.Printer;
+import server.Server;
+import server.data.PrintingData;
+
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * Created by vvrud on 14.09.16.
@@ -13,13 +16,19 @@ import java.io.IOException;
  *         It gets file and options to print.
  *         It also check if program interrupted.
  */
-class GetterServer extends Thread {
+public class GetterServer extends Thread {
 
-    private boolean printingInterrupted = false;
+    private static Printer printer;
+
+    public static Printer getPrinter() {
+        return printer;
+    }
 
     @Override
     public void run() {
+        boolean printingInterrupted = false;
         DataInputStream dataInput = Server.getDataInput();
+        ObjectInputStream objectInput = Server.getObjectInput();
 
         try {
             printingInterrupted = dataInput.readBoolean();
@@ -30,13 +39,16 @@ class GetterServer extends Thread {
 
         if (!printingInterrupted) {
             try {
-                inputOptions(dataInput);
+                inputOptions(objectInput);
                 inputFile(dataInput);
             } catch (IOException e) {
                 System.out.println("Failed input data");
+                e.printStackTrace();
             }
 
             Interrupter interrupter = new Interrupter(printingInterrupted);
+            printer = new Printer();
+            printer.start();
             interrupter.start();
         } else {
             Interrupter interrupter = new Interrupter(printingInterrupted);
@@ -44,13 +56,19 @@ class GetterServer extends Thread {
         }
     }
 
-    private void inputOptions(DataInputStream input) throws IOException {
-        PrintingData.setPrintingSpeed(Float.parseFloat(input.readUTF()));
-        PrintingData.setPrintingMode(input.readUTF());
-        PrintingData.setPrintingIntensity(Float.parseFloat(input.readUTF()));
-        System.out.println(PrintingData.getPrintingSpeed());
-        System.out.println(PrintingData.getPrintingMode());
-        System.out.println(PrintingData.getPrintingIntensity());
+    private void inputOptions(ObjectInputStream objectInput) throws IOException {
+        //TODO прием объекта
+        HashMap<String, String> options = null;
+        try {
+            options = (HashMap<String, String>) objectInput.readObject();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class was not found!");
+            e.printStackTrace();
+        }
+        System.out.println(options.get("Speed"));
+        System.out.println(options.get("Mode"));
+        System.out.println(options.get("Intensity"));
+        PrintingData.setOptions(options);
     }
 
     private void inputFile(DataInputStream input) throws IOException {
