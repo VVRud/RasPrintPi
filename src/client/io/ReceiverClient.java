@@ -11,7 +11,7 @@ import java.io.ObjectInputStream;
  * @author VVRud
  *         This class provides getting messages from server to client.
  */
-public class GetterClient extends Thread {
+public class ReceiverClient extends Thread {
 
     @Override
     public void run() {

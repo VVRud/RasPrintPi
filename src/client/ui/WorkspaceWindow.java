@@ -1,8 +1,10 @@
 package client.ui;
 
+import client.Client;
 import client.data.PrintingData;
-import client.io.GetterClient;
+import client.io.ReceiverClient;
 import client.io.SenderClient;
+import client.logic.Analyzer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,6 @@ import static client.data.Constants.*;
 
 public class WorkspaceWindow extends JFrame {
 
-    private static GetterClient getter;
     private final JPanel workPanel = new JPanel(new GridBagLayout());
 
     private JButton chooseFileButton,
@@ -86,9 +87,10 @@ public class WorkspaceWindow extends JFrame {
     private void stopPrinting() {
         setInactiveFalse();
         PrintingData.setPrintingInterrupted(true);
+        ReceiverClient receiver = Client.getReceiver();
 
-        if (getter.isAlive()) {
-            getter.interrupt();
+        if (receiver.isAlive()) {
+            receiver.interrupt();
         }
         SenderClient sender = new SenderClient();
         sender.start();
@@ -106,18 +108,10 @@ public class WorkspaceWindow extends JFrame {
         options.put("Intensity", intensity);
         options.put("Mode", mode);
 
-        System.out.println(options);
-
-        //Start printing
-
         PrintingData.setOptions(options);
         PrintingData.setPrintingInterrupted(false);
 
-        SenderClient sender = new SenderClient();
-        sender.start();
-
-        getter = new GetterClient();
-        getter.start();
+        new Analyzer().start();
     }
 
     private void drawAreaCreate() {

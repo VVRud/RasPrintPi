@@ -1,5 +1,7 @@
 package client;
 
+import client.io.ReceiverClient;
+import client.io.SenderClient;
 import client.ui.LoginWindow;
 import client.ui.WorkspaceWindow;
 
@@ -24,6 +26,10 @@ public class Client {
     private static DataInputStream dataInput;
     private static ObjectOutputStream objectOutput;
     private static ObjectInputStream objectInput;
+
+    private static SenderClient sender;
+    private static ReceiverClient receiver;
+
 
     public static void main(String[] args) {
         JFrame loginWindow = new LoginWindow();
@@ -78,5 +84,21 @@ public class Client {
 
     public static void setObjectInput(ObjectInputStream objectInput) {
         Client.objectInput = objectInput;
+    }
+
+    public static SenderClient getSender() {
+        return sender;
+    }
+
+    public static void setSender(SenderClient sender) {
+        Client.sender = sender;
+    }
+
+    public static ReceiverClient getReceiver() {
+        return receiver;
+    }
+
+    public static void setReceiver(ReceiverClient receiver) {
+        Client.receiver = receiver;
     }
 }

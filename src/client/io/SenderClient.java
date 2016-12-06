@@ -3,7 +3,10 @@ package client.io;
 import client.Client;
 import client.data.PrintingData;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * Created by vvrud on 12.09.16.
@@ -13,26 +16,18 @@ import java.io.*;
  */
 public class SenderClient extends Thread {
 
-    private static void sendOptions(ObjectOutputStream objectOutput) throws IOException {
-        objectOutput.writeObject(PrintingData.getOptions());
-
-        objectOutput.flush();
-    }
-
     @Override
     public void run() {
         boolean printingInterrupted = PrintingData.isPrintingInterrupted();
 
         DataOutputStream dataOutput = Client.getDataOutput();
-        ObjectOutputStream objectOutput = Client.getObjectOutput();
 
         if (!printingInterrupted) {
             try {
                 dataOutput.writeBoolean(printingInterrupted);
-                sendOptions(objectOutput);
                 sendFile(dataOutput);
             } catch (IOException e) {
-                System.out.println("Failed sending interruption false with file and options");
+                System.out.println("Failed sending interruption false with file");
                 e.printStackTrace();
             }
         } else {

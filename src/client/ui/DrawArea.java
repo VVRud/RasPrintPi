@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 
 /**
  * Created by vvrud on 14.11.16.
@@ -20,6 +21,9 @@ class DrawArea extends JComponent {
 
     private int beginX, beginY, endX, endY;
 
+    private ArrayList<Integer> listX = new ArrayList<>();
+    private ArrayList<Integer> listY = new ArrayList<>();
+
     DrawArea() {
 
         setDoubleBuffered(false);
@@ -27,9 +31,12 @@ class DrawArea extends JComponent {
             public void mousePressed(MouseEvent e) {
                 oldX = e.getX();
                 oldY = e.getY();
+
                 beginX = oldX;
                 beginY = oldY;
-                //TODO Cохранение точки P1
+
+                listX.add(beginX);
+                listY.add(beginY);
 
                 mouseMoved = false;
             }
@@ -40,18 +47,22 @@ class DrawArea extends JComponent {
 
                 if (mouseMoved && beginX == endX) {
                     g2.drawOval(beginX, beginY, 1, 1);
-                    repaint();
                     System.out.printf("MOUSE MOVED. CIRCLE. (%d; %d)\n", beginX, beginY);
                 } else if (mouseMoved && beginX != endX) {
                     g2.drawOval(beginX, beginY, 1, 1);
                     g2.drawOval(endX, endY, 1, 1);
-                    repaint();
                     System.out.printf("MOUSE MOVED. LINE. (%d; %d) -> (%d; %d)\n", beginX, beginY, endX, endY);
                 } else if (!mouseMoved) {
                     g2.drawOval(beginX, beginY, 1, 1);
-                    repaint();
                     System.out.printf("MOUSE WAS NOT MOVED. DOT. (%d; %d)\n", beginX, beginY);
-                }
+                } else throw new RuntimeException("Something went wrong!");
+
+                repaint();
+                System.out.println("X:" + listX.size() + " " + listX.toString());
+                System.out.println("Y:" + listY.size() + " " + listY.toString());
+
+                listX.clear();
+                listY.clear();
             }
         });
 
@@ -59,6 +70,9 @@ class DrawArea extends JComponent {
             public void mouseDragged(MouseEvent e) {
                 currentX = e.getX();
                 currentY = e.getY();
+
+                listX.add(currentX);
+                listY.add(currentY);
 
                 if (g2 != null) {
                     g2.drawLine(oldX, oldY, currentX, currentY);
