@@ -23,7 +23,7 @@ import static client.data.Constants.*;
 
 public class WorkspaceWindow extends JFrame {
 
-    private final JPanel workPanel = new JPanel(new GridBagLayout());
+    private static final JPanel workPanel = new JPanel(new GridBagLayout());
 
     private JButton chooseFileButton,
             startButton,
@@ -68,6 +68,10 @@ public class WorkspaceWindow extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void showWarningMessage(String message) {
+        JOptionPane.showMessageDialog(workPanel, message, WARN_TITLE, JOptionPane.WARNING_MESSAGE);
     }
 
     private void saveFile() {

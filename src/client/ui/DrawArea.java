@@ -1,5 +1,7 @@
 package client.ui;
 
+import client.logic.Analyzer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -58,6 +60,8 @@ class DrawArea extends JComponent {
                 } else throw new RuntimeException("Something went wrong!");
 
                 repaint();
+
+                Analyzer.addToAnalyze(listX, listY);
                 System.out.println("X:" + listX.size() + " " + listX.toString());
                 System.out.println("Y:" + listY.size() + " " + listY.toString());
 

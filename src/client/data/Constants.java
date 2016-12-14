@@ -20,10 +20,12 @@ public class Constants {
 
     //Errors
     public static final String ERR_TITLE = "ERROR!";
+    public static final String WARN_TITLE = "WARNING!";
     public static final String IP_ERR = "ERROR! Can't connect to server. Check your IP, please.";
     public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
+    public static final String EMPTY_DRAWING_LIST = "Printing is impossible now, you did'nt draw anything.";
 
     //Data
     public static final String[] SPEED_DATA = {
