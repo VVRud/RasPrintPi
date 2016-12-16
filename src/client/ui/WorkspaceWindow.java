@@ -128,13 +128,17 @@ public class WorkspaceWindow extends JFrame {
 
         PrintingData.setOptions(options);
         PrintingData.setPrintingInterrupted(false);
+        Analyzer analyzer = drawArea.getAnalyzer();
+        analyzer.setMode(BEZ_MODE);
+        analyzer.start();
 
-        String anMode = String.valueOf(modeAnalyzeList.getSelectedItem());
-        if (anMode.equals("Analyze Drawing")) {
-            new Analyzer(BEZ_MODE).start();
-        } else if (anMode.equals("Analyze Chosen File")) {
-            new Analyzer(JPG_MODE).start();
-        }
+//TODO uncomment lines, after adding jpg analyzing
+//        String anMode = String.valueOf(modeAnalyzeList.getSelectedItem());
+//        if (anMode.equals("Analyze Drawing")) {
+//            new Analyzer(BEZ_MODE).start();
+//        } else if (anMode.equals("Analyze Chosen File")) {
+//            new Analyzer(JPG_MODE).start();
+//        }
     }
 
     private void drawAreaCreate() {

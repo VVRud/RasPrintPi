@@ -44,20 +44,22 @@ public class SenderClient extends Thread {
 
     private void sendFile(DataOutputStream dataOutput) throws IOException {
         File file = PrintingData.getFile();
-        FileInputStream input = new FileInputStream(file);
-        long size = file.length();
-        byte[] buffer = new byte[(int) size];
+        if (file != null) {
+            FileInputStream input = new FileInputStream(file);
+            long size = file.length();
+            byte[] buffer = new byte[(int) size];
 
-        dataOutput.writeLong(size);
-        dataOutput.writeUTF(file.getName());
+            dataOutput.writeLong(size);
+            dataOutput.writeUTF(file.getName());
 
-        int in;
+            int in;
 
-        while ((in = input.read(buffer)) != -1) {
-            dataOutput.write(buffer, 0, in);
-        }
+            while ((in = input.read(buffer)) != -1) {
+                dataOutput.write(buffer, 0, in);
+            }
 
-        input.close();
-        dataOutput.flush();
+            input.close();
+            dataOutput.flush();
+        } else throw new IOException("File is null");
     }
 }

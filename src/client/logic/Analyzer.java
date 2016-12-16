@@ -21,16 +21,12 @@ public class Analyzer extends Thread {
     private static ArrayList<ArrayList<Integer>> listY = new ArrayList<>();
     private int mode = 1;
 
-    public Analyzer(int mode) {
-        this.mode = mode;
-    }
-
-    public static void addToAnalyze(ArrayList<Integer> listXDraw, ArrayList<Integer> listYDraw) {
+    public void addToAnalyze(ArrayList<Integer> listXDraw, ArrayList<Integer> listYDraw) {
         listX.add(listXDraw);
         listY.add(listYDraw);
     }
 
-    public static void clearLists() {
+    public void clearLists() {
         listX.clear();
         listY.clear();
     }
@@ -68,11 +64,14 @@ public class Analyzer extends Thread {
                 int lxs = lx.size();
                 int lys = ly.size();
 
-                if (lxs == 1 && lys == 1) {
+                if (lxs == 0 && lys == 0) {
+                    System.out.println("Something went wrong! List is empty!");
+                } else if (lxs == 1 && lys == 1) {
                     //add point
-
+                    System.out.printf("Point(%d; %d)\n", lx.get(0), ly.get(0));
                 } else if (lxs == 2 && lys == 2) {
                     //add line
+                    System.out.printf("Line(%d; %d)->(%d; %d)\n", lx.get(0), ly.get(0), lx.get(1), ly.get(1));
                 } else if (lxs == 3 && lys == 3) {
                     //add bezier curve2
                 } else if (lxs == 4 && lys == 4) {
@@ -82,6 +81,7 @@ public class Analyzer extends Thread {
                 }
             }
         }
+
     }
 
     private void analyzePicture() {
@@ -94,5 +94,9 @@ public class Analyzer extends Thread {
 
     private int findSecondPoint(int p1, int p2, int p3, int p4) {
         return (-5 * p4 + 18 * p3 - 9 * p2 + 2 * p1) / 6;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 }

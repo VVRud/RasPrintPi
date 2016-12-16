@@ -26,6 +26,8 @@ class DrawArea extends JComponent {
     private ArrayList<Integer> listX = new ArrayList<>();
     private ArrayList<Integer> listY = new ArrayList<>();
 
+    private Analyzer analyzer = new Analyzer();
+
     DrawArea() {
 
         setDoubleBuffered(false);
@@ -47,21 +49,21 @@ class DrawArea extends JComponent {
                 endX = e.getX();
                 endY = e.getY();
 
-                if (mouseMoved && beginX == endX) {
+                if (mouseMoved && ((beginX == endX) && (beginY == endY))) {
                     g2.drawOval(beginX, beginY, 1, 1);
                     System.out.printf("MOUSE MOVED. CIRCLE. (%d; %d)\n", beginX, beginY);
-                } else if (mouseMoved && beginX != endX) {
+                } else if (mouseMoved && ((beginX != endX) || (beginY != endY))) {
                     g2.drawOval(beginX, beginY, 1, 1);
                     g2.drawOval(endX, endY, 1, 1);
                     System.out.printf("MOUSE MOVED. LINE. (%d; %d) -> (%d; %d)\n", beginX, beginY, endX, endY);
                 } else if (!mouseMoved) {
                     g2.drawOval(beginX, beginY, 1, 1);
                     System.out.printf("MOUSE WAS NOT MOVED. DOT. (%d; %d)\n", beginX, beginY);
-                } else throw new RuntimeException("Something went wrong!");
+                } else System.out.println("Something went wrong!");
 
                 repaint();
 
-                Analyzer.addToAnalyze(listX, listY);
+                analyzer.addToAnalyze(new ArrayList<>(listX), new ArrayList<>(listY));
                 System.out.println("X:" + listX.size() + " " + listX.toString());
                 System.out.println("Y:" + listY.size() + " " + listY.toString());
 
@@ -103,10 +105,14 @@ class DrawArea extends JComponent {
     }
 
     void clear() {
-        Analyzer.clearLists();
+        analyzer.clearLists();
         g2.setPaint(Color.white);
         g2.fillRect(0, 0, getSize().width, getSize().height);
         g2.setPaint(Color.black);
         repaint();
+    }
+
+    public Analyzer getAnalyzer() {
+        return analyzer;
     }
 }
