@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 import static client.data.Constants.*;
@@ -38,6 +40,7 @@ public class WorkspaceWindow extends JFrame {
     private JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
     private JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
+    private JComboBox<String> modeAnalyzeList = new JComboBox<>(MODE_ANALYZE_DATA);
 
     public WorkspaceWindow() {
         super(TITLE + " | Opened on IP: " + LoginWindow.getIp() + ":" + LoginWindow.getPort());
@@ -75,7 +78,17 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void saveFile() {
-        //TODO File saving method
+        JFileChooser saveDialog = new JFileChooser();
+        saveDialog.addChoosableFileFilter(FILTER);
+        saveDialog.setFileFilter(FILTER);
+        if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileWriter fw = new FileWriter(saveDialog.getSelectedFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Всё погибло!");
+            }
+        }
     }
 
     private void chooseFile() {
@@ -85,6 +98,7 @@ public class WorkspaceWindow extends JFrame {
             File file = chooseDialog.getSelectedFile();
             fileDir.setText(file.getName());
             PrintingData.setFile(file);
+            System.out.println(file.getAbsolutePath().replaceAll(file.getName(), ""));
         }
     }
 
@@ -115,7 +129,12 @@ public class WorkspaceWindow extends JFrame {
         PrintingData.setOptions(options);
         PrintingData.setPrintingInterrupted(false);
 
-        new Analyzer().start();
+        String anMode = String.valueOf(modeAnalyzeList.getSelectedItem());
+        if (anMode.equals("Analyze Drawing")) {
+            new Analyzer(BEZ_MODE).start();
+        } else if (anMode.equals("Analyze Chosen File")) {
+            new Analyzer(JPG_MODE).start();
+        }
     }
 
     private void drawAreaCreate() {

@@ -1,5 +1,7 @@
 package client.data;
 
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
 /**
@@ -13,19 +15,27 @@ public class Constants {
 
     public static final String TITLE = "RasPrintPi";
     public static final Dimension CANVAS_SIZE = new Dimension(420, 420);
+    public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files", "xml", "jpg", "jpeg");
 
     //TODO Set default ip and port
     public static final String DEFAULT_IP = "localhost";
     public static final String DEFAULT_PORT = "6565";
 
+    //Modes
+    public static final int BEZ_MODE = 1;
+    public static final int JPG_MODE = 2;
+
     //Errors
     public static final String ERR_TITLE = "ERROR!";
-    public static final String WARN_TITLE = "WARNING!";
     public static final String IP_ERR = "ERROR! Can't connect to server. Check your IP, please.";
     public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
+
+    //Warnings
+    public static final String WARN_TITLE = "WARNING!";
     public static final String EMPTY_DRAWING_LIST = "Printing is impossible now, you did'nt draw anything.";
+    public static final String UNKNOWN_MODE = "Unknown mode! Please, try again.";
 
     //Data
     public static final String[] SPEED_DATA = {
@@ -42,5 +52,9 @@ public class Constants {
             "0.4",
             "0.6",
             "0.8"
+    };
+    public static final String[] MODE_ANALYZE_DATA = {
+            "Analyze Drawing",
+            "Analyze Chosen File"
     };
 }

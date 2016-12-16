@@ -103,6 +103,7 @@ class DrawArea extends JComponent {
     }
 
     void clear() {
+        Analyzer.clearLists();
         g2.setPaint(Color.white);
         g2.fillRect(0, 0, getSize().width, getSize().height);
         g2.setPaint(Color.black);
