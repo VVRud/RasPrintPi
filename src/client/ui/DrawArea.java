@@ -82,6 +82,8 @@ class DrawArea extends JComponent {
 
                 if (g2 != null) {
                     g2.drawLine(oldX, oldY, currentX, currentY);
+                    //g2.drawOval(currentX, currentY, 2, 2);
+                    g2.fillOval(currentX, currentY, 2, 2);
                     repaint();
                     oldX = currentX;
                     oldY = currentY;

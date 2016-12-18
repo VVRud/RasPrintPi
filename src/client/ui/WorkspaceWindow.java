@@ -144,6 +144,7 @@ public class WorkspaceWindow extends JFrame {
     private void drawAreaCreate() {
         drawArea = new DrawArea();
         drawArea.setPreferredSize(CANVAS_SIZE);
+        drawArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 12, 0, 0, GridBagConstraints.WEST,
                 GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
     }
