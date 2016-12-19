@@ -121,7 +121,7 @@ public class Analyzer extends Thread {
                             "\t\t\t<xCoord>" + p2x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p2y + "</yCoord>\n" +
                             "\t\t</point2>");
-                } else if ((lxs >= 4 && lxs <= 21) && (lys >= 4 && lys <= 21)) {
+                } else if ((lxs >= 4 && lxs <= 28) && (lys >= 4 && lys <= 28)) {
                     int p0x = lx.get(0);
                     int p0y = ly.get(0);
                     int p1x = lx.get((lxs / 3) - 1);
@@ -148,11 +148,17 @@ public class Analyzer extends Thread {
                             "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
                             "\t\t</point3>");
-                } else if (lxs > 21 && lys > 21) {
+                } else if (lxs > 28 && lys > 28) {
                     //add bezier path
+                    float num = (lxs - 1) / 3;
 
-
-                    System.out.println("Created BezierPath");
+                    int j = 1;
+                    while (!((num >= 10 + 5 * (j - 1)) && (num < 10 + 5 * j))) {
+                        j++;
+                    }
+                    int curves = j + 2;
+                    int pointsNum = 3 * curves + 1;
+                    System.out.printf("BezierPath. Points in list: %d. Curves: %d. Points to XML: %d\n", lxs, curves, pointsNum);
                 }
 
                 writer.write("\t</Element>");
