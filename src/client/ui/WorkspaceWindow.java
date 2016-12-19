@@ -10,17 +10,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
 import static client.data.Constants.*;
 
 /**
  * Created by vvrud on 11.09.16.
+ *
  * @author VVRud
- * Workspace window of my soft, that let you to download file,
- * choose all available features of printing and start printing.
+ *         Workspace window of my soft, that let you to download file,
+ *         choose all available features of printing and start printing.
  */
 
 public class WorkspaceWindow extends JFrame {
@@ -78,15 +80,18 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void saveFile() {
-        JFileChooser saveDialog = new JFileChooser();
-        saveDialog.addChoosableFileFilter(FILTER);
-        saveDialog.setFileFilter(FILTER);
-        if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileWriter fw = new FileWriter(saveDialog.getSelectedFile());
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Всё погибло!");
+        if (PrintingData.xmlFile != null) {
+            JFileChooser saveDialog = new JFileChooser();
+            saveDialog.addChoosableFileFilter(FILTER);
+            saveDialog.setFileFilter(FILTER);
+            if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    File f = saveDialog.getSelectedFile();
+                    Files.copy(PrintingData.xmlFile.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Всё погибло!");
+                }
             }
         }
     }
@@ -99,6 +104,12 @@ public class WorkspaceWindow extends JFrame {
             fileDir.setText(file.getName());
             PrintingData.setFile(file);
             System.out.println(file.getAbsolutePath().replaceAll(file.getName(), ""));
+
+            if (file.getName().contains(".xml")) {
+                System.out.println("Looking for jpg file: " + file.getName().replaceAll("xml", "jpg"));
+            } else if (file.getName().contains(".jpg")) {
+                System.out.println("Looking for xml file: " + file.getName().replaceAll("jpg", "xml"));
+            }
         }
     }
 

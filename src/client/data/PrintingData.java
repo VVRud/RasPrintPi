@@ -11,6 +11,7 @@ import java.util.HashMap;
  */
 public class PrintingData {
 
+    public static File xmlFile;
     private static File file;
     private static HashMap<String, String> options;
     private static boolean printingInterrupted;

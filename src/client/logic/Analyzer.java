@@ -1,6 +1,7 @@
 package client.logic;
 
 import client.Client;
+import client.data.PrintingData;
 import client.io.ReceiverClient;
 import client.io.SenderClient;
 import client.ui.WorkspaceWindow;
@@ -65,7 +66,7 @@ public class Analyzer extends Thread {
         } else {
             ArrayList<Integer> lx;
             ArrayList<Integer> ly;
-            File xmlFile = new File(File.separator + "tmp" + File.separator + "xmlFile");
+            File xmlFile = File.createTempFile("rpi_xml_tmp", ".xml");
             FileWriter fr = new FileWriter(xmlFile);
             BufferedWriter writer = new BufferedWriter(fr);
             //TODO write first line of xml
@@ -157,6 +158,10 @@ public class Analyzer extends Thread {
                 writer.write("\t</Element>");
             }
             writer.write("</Elements>");
+            writer.flush();
+            writer.close();
+
+            PrintingData.xmlFile = xmlFile;
         }
     }
 
