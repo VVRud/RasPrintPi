@@ -69,10 +69,17 @@ public class Analyzer extends Thread {
             File xmlFile = File.createTempFile("rpi_xml_tmp", ".xml");
             FileWriter fr = new FileWriter(xmlFile);
             BufferedWriter writer = new BufferedWriter(fr);
-            //TODO write first line of xml
 
-            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<Elements>");
+            writer.write(
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                            "<Elements>" +
+                            "\t<Element>\n" +
+                            "\t\t<type>Options</type>\n" +
+                            "\t\t<mode>" + PrintingData.getOptions().get("Mode") + "</mode>\n" +
+                            "\t\t<intensity>" + PrintingData.getOptions().get("Intensity") + "</intensity>\n" +
+                            "\t\t<speed>" + PrintingData.getOptions().get("Speed") + "</speed>\n" +
+                            "\t</Element>");
+
             for (int i = 0; i < listX.size() || i < listY.size(); i++) {
                 lx = listX.get(i);
                 ly = listY.get(i);
@@ -85,12 +92,14 @@ public class Analyzer extends Thread {
                 if (lxs == 0 && lys == 0) {
                     System.out.println("Something went wrong! List is empty!");
                 } else if (lxs == 1 && lys == 1) {
-                    writer.write("\t\t<type>Point</type>\n" +
+                    writer.write(
+                            "\t\t<type>Point</type>\n" +
                             "\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
                             "\t\t<yCoord>" + ly.get(0) + "</yCoord>");
                     System.out.printf("Point(%d; %d)\n", lx.get(0), ly.get(0));
                 } else if (lxs == 2 && lys == 2) {
-                    writer.write("<type>Line</type>\n" +
+                    writer.write(
+                            "\t\t<type>Line</type>\n" +
                             "\t\t<point0>\n" +
                             "\t\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
                             "\t\t\t<yCoord" + ly.get(0) + "</yCoord>\n" +
@@ -108,7 +117,8 @@ public class Analyzer extends Thread {
                     int p2x = lx.get(2);
                     int p2y = ly.get(2);
 
-                    writer.write("\t\t<type>BezierCurve2</type>\n" +
+                    writer.write(
+                            "\t\t<type>BezierCurve2</type>\n" +
                             "\t\t<point0>\n" +
                             "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
@@ -131,7 +141,8 @@ public class Analyzer extends Thread {
                     int p3x = lx.get(lxs - 1);
                     int p3y = ly.get(lys - 1);
 
-                    writer.write("<type>BezierCurve3</type>\n" +
+                    writer.write(
+                            "\t\t<type>BezierCurve3</type>\n" +
                             "\t\t<point0>\n" +
                             "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
@@ -149,16 +160,63 @@ public class Analyzer extends Thread {
                             "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
                             "\t\t</point3>");
                 } else if (lxs > 28 && lys > 28) {
-                    //add bezier path
-                    float num = (lxs - 1) / 3;
+                    double num = (lxs - 1) / 3;
+                    int curves = 3;
 
-                    int j = 1;
-                    while (!((num >= 10 + 5 * (j - 1)) && (num < 10 + 5 * j))) {
-                        j++;
+                    while (!((num >= 10 + 5 * (curves - 3)) && (num < 10 + 5 * (curves - 2)))) {
+                        curves++;
                     }
-                    int curves = j + 2;
-                    int pointsNum = 3 * curves + 1;
-                    System.out.printf("BezierPath. Points in list: %d. Curves: %d. Points to XML: %d\n", lxs, curves, pointsNum);
+
+                    int pointsCount = 3 * curves + 1;
+                    System.out.printf("BezierPath. Points in list: %d. Curves: %d. Points to XML: %d\n", lxs, curves, pointsCount);
+
+                    double coefficient = pointsCount / lxs;
+                    int coef0, coef1, coef2, coef3;
+                    int p0x = 0, p1x, p2x, p3x,
+                            p0y = 0, p1y, p2y, p3y;
+
+                    for (int j = 0; j < pointsCount; j = j + 3) {
+                        coef0 = (int) (j * coefficient);
+                        coef1 = (int) ((j + 1) * coefficient);
+                        coef2 = (int) ((j + 2) * coefficient);
+                        coef3 = (int) ((j + 3) * coefficient);
+
+                        if (j == 0) {
+                            p0x = lx.get(coef0);
+                            p0y = ly.get(coef0);
+                        }
+
+                        p1x = lx.get(coef1);
+                        p1y = ly.get(coef1);
+                        p2x = lx.get(coef2);
+                        p2y = ly.get(coef2);
+                        p3x = lx.get(coef3);
+                        p3y = ly.get(coef3);
+
+                        if (j == 0) {
+                            writer.write("\t\t<point" + j + ">\n" +
+                                    "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
+                                    "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
+                                    "\t\t</point" + j + ">\n");
+                        }
+
+                        writer.write(
+                                "\t\t<point" + (j + 1) + ">\n" +
+                                        "\t\t\t<xCoord>" + findFirstPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
+                                        "\t\t\t<yCoord>" + findFirstPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
+                                        "\t\t</point" + (j + 1) + ">\n" +
+                                        "\t\t<point" + (j + 2) + ">\n" +
+                                        "\t\t\t<xCoord>" + findSecondPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
+                                        "\t\t\t<yCoord>" + findSecondPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
+                                        "\t\t</point" + (j + 2) + ">\n" +
+                                        "\t\t<point" + (j + 3) + ">\n" +
+                                        "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
+                                        "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
+                                        "\t\t</point" + (j + 3) + ">");
+
+                        p0x = p3x;
+                        p0y = p3y;
+                    }
                 }
 
                 writer.write("\t</Element>");
@@ -167,7 +225,7 @@ public class Analyzer extends Thread {
             writer.flush();
             writer.close();
 
-            PrintingData.xmlFile = xmlFile;
+            PrintingData.setXmlFile(xmlFile);
         }
     }
 

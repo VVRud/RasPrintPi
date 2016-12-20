@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class PrintingData {
 
-    public static File xmlFile;
+    private static File xmlFile;
     private static File file;
     private static HashMap<String, String> options;
     private static boolean printingInterrupted;
@@ -38,5 +38,13 @@ public class PrintingData {
 
     public static void setOptions(HashMap<String, String> options) {
         PrintingData.options = options;
+    }
+
+    public static File getXmlFile() {
+        return xmlFile;
+    }
+
+    public static void setXmlFile(File xmlFile) {
+        PrintingData.xmlFile = xmlFile;
     }
 }

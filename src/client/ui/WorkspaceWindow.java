@@ -80,14 +80,15 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void saveFile() {
-        if (PrintingData.xmlFile != null) {
+        File xml = PrintingData.getXmlFile();
+        if (xml != null) {
             JFileChooser saveDialog = new JFileChooser();
             saveDialog.addChoosableFileFilter(FILTER);
             saveDialog.setFileFilter(FILTER);
             if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 try {
                     File f = saveDialog.getSelectedFile();
-                    Files.copy(PrintingData.xmlFile.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(xml.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("Всё погибло!");
