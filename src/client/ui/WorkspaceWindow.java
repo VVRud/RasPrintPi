@@ -42,7 +42,8 @@ public class WorkspaceWindow extends JFrame {
     private JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
     private JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
-    private JComboBox<String> modeAnalyzeList = new JComboBox<>(MODE_ANALYZE_DATA);
+
+    private ModeChooser chooser = null;
 
     public WorkspaceWindow() {
         super(TITLE + " | Opened on IP: " + LoginWindow.getIp() + ":" + LoginWindow.getPort());
@@ -102,15 +103,23 @@ public class WorkspaceWindow extends JFrame {
         int returnedFile = chooseDialog.showDialog(null, "Open file");
         if (returnedFile == JFileChooser.APPROVE_OPTION) {
             File file = chooseDialog.getSelectedFile();
-            fileDir.setText(file.getName());
-            PrintingData.setFile(file);
-            System.out.println(file.getAbsolutePath().replaceAll(file.getName(), ""));
 
-            if (file.getName().contains(".xml")) {
-                System.out.println("Looking for jpg file: " + file.getName().replaceAll("xml", "jpg"));
-            } else if (file.getName().contains(".jpg")) {
-                System.out.println("Looking for xml file: " + file.getName().replaceAll("jpg", "xml"));
-            }
+            //PrintingData.setFile(file);
+
+            String ext = getFileExtension(file);
+            if (!ext.equals("txt")) {
+                //TODO Выбор файла
+                if (ext.contains("xml")) {
+                    //Вопрос "Есть ли возможность выбрать джпег файл?"
+                    //Если "да", то выводить File Chooser с фильтром под jpg файл
+                    System.out.println("Looking for jpg file: " + file.getName().replaceAll("xml", "jpg"));
+                } else if (ext.equals("jpg")) {
+                    //Вопрос "Есть ли возможность выбрать иксэмэль файл?"
+                    //Если "да", то выводить File Chooser с фильтром под xml файл
+                    System.out.println("Looking for xml file: " + file.getName().replaceAll("jpg", "xml"));
+                }
+            } else System.out.println("Txt file chosen");
+            fileDir.setText(file.getName());
         }
     }
 
@@ -127,8 +136,6 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void startPrinting() {
-        setInactiveTrue();
-
         String speed = String.valueOf(speedList.getSelectedItem());
         String mode = String.valueOf(modeList.getSelectedItem());
         String intensity = String.valueOf(intensityList.getSelectedItem());
@@ -140,25 +147,45 @@ public class WorkspaceWindow extends JFrame {
 
         PrintingData.setOptions(options);
         PrintingData.setPrintingInterrupted(false);
-        Analyzer analyzer = drawArea.getAnalyzer();
-        analyzer.setMode(BEZ_MODE);
-        analyzer.start();
+//        Analyzer analyzer = drawArea.getAnalyzer();
+//        analyzer.setMode(BEZ_MODE);
+//        analyzer.start();
 
-//TODO uncomment lines, after adding jpg analyzing
-//        String anMode = String.valueOf(modeAnalyzeList.getSelectedItem());
-//        if (anMode.equals("Analyze Drawing")) {
-//            new Analyzer(BEZ_MODE).start();
-//        } else if (anMode.equals("Analyze Chosen File")) {
-//            new Analyzer(JPG_MODE).start();
-//        }
+        Analyzer analyzer = drawArea.getAnalyzer();
+        if (PrintingData.getFile() != null && PrintingData.getXmlFile() != null) {
+            chooser = new ModeChooser(this);
+            chooser.setVisible(true);
+            String anMode = chooser.execute();
+            if (anMode != null) {
+                if (anMode.equals("Analyze Drawing")) {
+                    analyzer.setMode(BEZ_MODE);
+                } else if (anMode.equals("Analyze Chosen File")) {
+                    analyzer.setMode(JPG_MODE);
+                }
+                analyzer.start();
+            } else return;
+        }
+
+
+        setInactiveTrue();
+
+        //Run after Analyzing
+        SenderClient sender = new SenderClient();
+        sender.start();
+        Client.setSender(sender);
+
+        ReceiverClient receiver = new ReceiverClient();
+        receiver.start();
+        Client.setReceiver(receiver);
     }
 
     private void drawAreaCreate() {
         drawArea = new DrawArea();
         drawArea.setPreferredSize(CANVAS_SIZE);
         drawArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 12, 0, 0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+        workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 12,
+                0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(5, 5, 5, 5), 0, 0));
     }
 
     private void createProgressBar(JProgressBar progressBar) {
@@ -194,7 +221,7 @@ public class WorkspaceWindow extends JFrame {
         JLabel saveClearLabel = new JLabel("Save or choose drawing");
         JLabel startStopLabel = new JLabel("Start or stop printing");
 
-        workPanel.add(chooseLabel, new GridBagConstraints(1, 0, 2, 1, 0, 0, GridBagConstraints.EAST,
+        workPanel.add(chooseLabel, new GridBagConstraints(1, 0, 2, 1, 0, 0, GridBagConstraints.CENTER,
                 GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
         workPanel.add(fileDir, new GridBagConstraints(1, 1, 2, 1, 0, 0, GridBagConstraints.CENTER,
                 GridBagConstraints.CENTER, new Insets(5, 5, 5, 3), 0, 0));
@@ -236,6 +263,7 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void setInactiveFalse() {
+        drawArea.setEnabled(true);
         chooseFileButton.setEnabled(true);
         startButton.setEnabled(true);
         stopButton.setEnabled(false);
@@ -247,6 +275,7 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void setInactiveTrue() {
+        drawArea.setEnabled(false);
         chooseFileButton.setEnabled(false);
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
@@ -255,5 +284,12 @@ public class WorkspaceWindow extends JFrame {
         speedList.setEnabled(false);
         modeList.setEnabled(false);
         intensityList.setEnabled(false);
+    }
+
+    private String getFileExtension(File file) {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        else return "";
     }
 }

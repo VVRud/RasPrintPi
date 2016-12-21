@@ -1,9 +1,6 @@
 package client.logic;
 
-import client.Client;
 import client.data.PrintingData;
-import client.io.ReceiverClient;
-import client.io.SenderClient;
 import client.ui.WorkspaceWindow;
 
 import java.io.BufferedWriter;
@@ -38,7 +35,6 @@ public class Analyzer extends Thread {
 
     @Override
     public void run() {
-
         if (mode == BEZ_MODE) {
             try {
                 analyzeCurve();
@@ -49,15 +45,6 @@ public class Analyzer extends Thread {
         } else if (mode == JPG_MODE) {
             analyzePicture();
         } else WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
-
-        //Run after Analyzing
-        SenderClient sender = new SenderClient();
-        sender.start();
-        Client.setSender(sender);
-
-        ReceiverClient receiver = new ReceiverClient();
-        receiver.start();
-        Client.setReceiver(receiver);
     }
 
     private void analyzeCurve() throws IOException {
@@ -194,7 +181,8 @@ public class Analyzer extends Thread {
                         p3y = ly.get(coef3);
 
                         if (j == 0) {
-                            writer.write("\t\t<point" + j + ">\n" +
+                            writer.write(
+                                    "\t\t<point" + j + ">\n" +
                                     "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                                     "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
                                     "\t\t</point" + j + ">\n");
