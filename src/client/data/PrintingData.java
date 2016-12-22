@@ -12,16 +12,17 @@ import java.util.HashMap;
 public class PrintingData {
 
     private static File xmlFile;
-    private static File file;
+    private static File jpgFile;
+    private static File txtFile;
     private static HashMap<String, String> options;
     private static boolean printingInterrupted;
 
-    public static File getFile() {
-        return file;
+    public static File getJpgFile() {
+        return jpgFile;
     }
 
-    public static void setFile(File file) {
-        PrintingData.file = file;
+    public static void setJpgFile(File jpgFile) {
+        PrintingData.jpgFile = jpgFile;
     }
 
     public static boolean isPrintingInterrupted() {
@@ -46,5 +47,13 @@ public class PrintingData {
 
     public static void setXmlFile(File xmlFile) {
         PrintingData.xmlFile = xmlFile;
+    }
+
+    public static File getTxtFile() {
+        return txtFile;
+    }
+
+    public static void setTxtFile(File txtFile) {
+        PrintingData.txtFile = txtFile;
     }
 }

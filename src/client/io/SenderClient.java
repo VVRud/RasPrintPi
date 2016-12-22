@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static client.data.Constants.BEZ_MODE;
+import static client.data.Constants.TXT_MODE;
+
 /**
  * Created by vvrud on 12.09.16.
  *
@@ -16,9 +19,20 @@ import java.io.IOException;
  */
 public class SenderClient extends Thread {
 
+    private int mode = 1;
+
     @Override
     public void run() {
+
         boolean printingInterrupted = PrintingData.isPrintingInterrupted();
+
+        if (mode == TXT_MODE) {
+
+        } else if (mode == BEZ_MODE) {
+
+        } else if (!printingInterrupted) {
+
+        }
 
         DataOutputStream dataOutput = Client.getDataOutput();
 
@@ -43,7 +57,7 @@ public class SenderClient extends Thread {
     }
 
     private void sendFile(DataOutputStream dataOutput) throws IOException {
-        File file = PrintingData.getFile();
+        File file = PrintingData.getJpgFile();
         if (file != null) {
             FileInputStream input = new FileInputStream(file);
             long size = file.length();
@@ -61,5 +75,9 @@ public class SenderClient extends Thread {
             input.close();
             dataOutput.flush();
         } else throw new IOException("File is null");
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 }

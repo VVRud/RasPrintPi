@@ -24,6 +24,7 @@ public class Constants {
     //Modes
     public static final int BEZ_MODE = 1;
     public static final int JPG_MODE = 2;
+    public static final int TXT_MODE = 3;
 
     //Errors
     public static final String ERR_TITLE = "ERROR!";

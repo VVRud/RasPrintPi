@@ -6,9 +6,11 @@ import client.io.ReceiverClient;
 import client.io.SenderClient;
 import client.logic.Analyzer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,22 +30,17 @@ import static client.data.Constants.*;
 public class WorkspaceWindow extends JFrame {
 
     private static final JPanel workPanel = new JPanel(new GridBagLayout());
-
+    private static JLabel fileDir;
     private JButton chooseFileButton,
             startButton,
             stopButton,
             saveFileButton,
             clearButton;
-
-    private JLabel fileDir;
-
     private DrawArea drawArea;
 
     private JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
     private JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
-
-    private ModeChooser chooser = null;
 
     public WorkspaceWindow() {
         super(TITLE + " | Opened on IP: " + LoginWindow.getIp() + ":" + LoginWindow.getPort());
@@ -80,6 +77,10 @@ public class WorkspaceWindow extends JFrame {
         JOptionPane.showMessageDialog(workPanel, message, WARN_TITLE, JOptionPane.WARNING_MESSAGE);
     }
 
+    static JLabel getFileDir() {
+        return fileDir;
+    }
+
     private void saveFile() {
         File xml = PrintingData.getXmlFile();
         if (xml != null) {
@@ -104,21 +105,23 @@ public class WorkspaceWindow extends JFrame {
         if (returnedFile == JFileChooser.APPROVE_OPTION) {
             File file = chooseDialog.getSelectedFile();
 
-            //PrintingData.setFile(file);
-
             String ext = getFileExtension(file);
-            if (!ext.equals("txt")) {
-                //TODO Выбор файла
-                if (ext.contains("xml")) {
-                    //Вопрос "Есть ли возможность выбрать джпег файл?"
-                    //Если "да", то выводить File Chooser с фильтром под jpg файл
-                    System.out.println("Looking for jpg file: " + file.getName().replaceAll("xml", "jpg"));
-                } else if (ext.equals("jpg")) {
-                    //Вопрос "Есть ли возможность выбрать иксэмэль файл?"
-                    //Если "да", то выводить File Chooser с фильтром под xml файл
-                    System.out.println("Looking for xml file: " + file.getName().replaceAll("jpg", "xml"));
+            if (ext.equals("jpg") || ext.equals("jpeg")) {
+                try {
+                    BufferedImage in = ImageIO.read(file);
+                    drawArea.drawImage(in);
+                    PrintingData.setJpgFile(file);
+                } catch (IOException e) {
+                    System.out.println("Failed reading image");
+                    e.printStackTrace();
                 }
-            } else System.out.println("Txt file chosen");
+            } else if (ext.equals("xml")) {
+                PrintingData.setXmlFile(file);
+            } else if (ext.equals("txt")) {
+                PrintingData.setTxtFile(file);
+            }
+
+
             fileDir.setText(file.getName());
         }
     }
@@ -147,14 +150,10 @@ public class WorkspaceWindow extends JFrame {
 
         PrintingData.setOptions(options);
         PrintingData.setPrintingInterrupted(false);
-//        Analyzer analyzer = drawArea.getAnalyzer();
-//        analyzer.setMode(BEZ_MODE);
-//        analyzer.start();
 
         Analyzer analyzer = drawArea.getAnalyzer();
-        if (PrintingData.getFile() != null && PrintingData.getXmlFile() != null) {
-            chooser = new ModeChooser(this);
-            chooser.setVisible(true);
+        if ((PrintingData.getTxtFile() != null || PrintingData.getXmlFile() != null) && drawArea.isActive()) {
+            ModeChooser chooser = new ModeChooser(this);
             String anMode = chooser.execute();
             if (anMode != null) {
                 if (anMode.equals("Analyze Drawing")) {
@@ -162,21 +161,14 @@ public class WorkspaceWindow extends JFrame {
                 } else if (anMode.equals("Analyze Chosen File")) {
                     analyzer.setMode(JPG_MODE);
                 }
-                analyzer.start();
             } else return;
+        } else if (PrintingData.getJpgFile() != null) {
+            analyzer.setMode(JPG_MODE);
+        } else if (drawArea.isActive()) {
+            analyzer.setMode(BEZ_MODE);
         }
-
-
+        analyzer.start();
         setInactiveTrue();
-
-        //Run after Analyzing
-        SenderClient sender = new SenderClient();
-        sender.start();
-        Client.setSender(sender);
-
-        ReceiverClient receiver = new ReceiverClient();
-        receiver.start();
-        Client.setReceiver(receiver);
     }
 
     private void drawAreaCreate() {

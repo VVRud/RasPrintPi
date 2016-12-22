@@ -1,6 +1,9 @@
 package client.logic;
 
+import client.Client;
 import client.data.PrintingData;
+import client.io.ReceiverClient;
+import client.io.SenderClient;
 import client.ui.WorkspaceWindow;
 
 import java.io.BufferedWriter;
@@ -45,6 +48,16 @@ public class Analyzer extends Thread {
         } else if (mode == JPG_MODE) {
             analyzePicture();
         } else WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
+
+
+        //Run after Analyzing
+        SenderClient sender = new SenderClient();
+        sender.start();
+        Client.setSender(sender);
+
+        ReceiverClient receiver = new ReceiverClient();
+        receiver.start();
+        Client.setReceiver(receiver);
     }
 
     private void analyzeCurve() throws IOException {
@@ -53,9 +66,9 @@ public class Analyzer extends Thread {
         } else {
             ArrayList<Integer> lx;
             ArrayList<Integer> ly;
-            File xmlFile = File.createTempFile("rpi_xml_tmp", ".xml");
-            FileWriter fr = new FileWriter(xmlFile);
-            BufferedWriter writer = new BufferedWriter(fr);
+            File xmlFile = File.createTempFile("rpi_xml_tmp_", ".xml");
+            FileWriter fw = new FileWriter(xmlFile);
+            BufferedWriter writer = new BufferedWriter(fw);
 
             writer.write(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -210,7 +223,9 @@ public class Analyzer extends Thread {
                 writer.write("\t</Element>");
             }
             writer.write("</Elements>");
+            fw.flush();
             writer.flush();
+            fw.close();
             writer.close();
 
             PrintingData.setXmlFile(xmlFile);
@@ -218,7 +233,7 @@ public class Analyzer extends Thread {
     }
 
     private void analyzePicture() {
-
+        //TODO Picture Analyzing method
     }
 
     private double findFirstPointBez3(int p0, int p1, int p2, int p3) {

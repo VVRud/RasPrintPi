@@ -1,5 +1,6 @@
 package client.ui;
 
+import client.data.PrintingData;
 import client.logic.Analyzer;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +23,7 @@ class DrawArea extends JComponent {
     private int currentX, currentY, oldX, oldY;
     private boolean mouseMoved;
 
-    private boolean areaActive = false;
+    private boolean active = false;
 
     private int beginX, beginY, endX, endY;
 
@@ -46,7 +48,7 @@ class DrawArea extends JComponent {
                     listY.add(beginY);
 
                     mouseMoved = false;
-                    if (!areaActive) areaActive = true;
+                    if (!active) active = true;
                 }
             }
 
@@ -103,6 +105,14 @@ class DrawArea extends JComponent {
         });
     }
 
+    void drawImage(BufferedImage img) {
+        setEnabled(false);
+        clear();
+        g2.drawImage(img, 0, 0, 420, 420,
+                0, 0, img.getWidth(), img.getHeight(), null);
+        repaint();
+    }
+
     protected void paintComponent(Graphics g) {
         if (image == null) {
             image = createImage(getSize().width, getSize().height);
@@ -119,10 +129,19 @@ class DrawArea extends JComponent {
         g2.fillRect(0, 0, getSize().width, getSize().height);
         g2.setPaint(Color.black);
         repaint();
-        if (areaActive) areaActive = false;
+        setEnabled(true);
+        if (active) active = false;
+        if (PrintingData.getJpgFile() != null) {
+            PrintingData.setJpgFile(null);
+            WorkspaceWindow.getFileDir().setText("<file directory here>");
+        }
     }
 
-    public Analyzer getAnalyzer() {
+    Analyzer getAnalyzer() {
         return analyzer;
+    }
+
+    boolean isActive() {
+        return active;
     }
 }
