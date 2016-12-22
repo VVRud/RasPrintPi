@@ -20,12 +20,11 @@ class DrawArea extends JComponent {
 
     private Image image;
     private Graphics2D g2;
-    private int currentX, currentY, oldX, oldY;
     private boolean mouseMoved;
-
     private boolean active = false;
 
     private int beginX, beginY, endX, endY;
+    private int currentX, currentY, oldX, oldY;
 
     private ArrayList<Integer> listX = new ArrayList<>();
     private ArrayList<Integer> listY = new ArrayList<>();
@@ -108,8 +107,23 @@ class DrawArea extends JComponent {
     void drawImage(BufferedImage img) {
         setEnabled(false);
         clear();
-        g2.drawImage(img, 0, 0, 420, 420,
-                0, 0, img.getWidth(), img.getHeight(), null);
+
+        int imgWidth = img.getWidth();
+        int imgHeight = img.getHeight();
+        int width = 0;
+        int height = 0;
+        if (imgWidth > imgHeight) {
+            width = 420;
+            height = (imgHeight * 420) / imgWidth;
+        } else if (imgHeight > imgWidth) {
+            height = 420;
+            width = (420 * imgWidth) / imgHeight;
+        } else if (imgHeight == imgWidth) {
+            width = imgWidth;
+            height = imgHeight;
+        }
+
+        g2.drawImage(img, 0, 0, width, height, null);
         repaint();
     }
 
