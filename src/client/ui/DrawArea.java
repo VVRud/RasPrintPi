@@ -105,7 +105,6 @@ class DrawArea extends JComponent {
     }
 
     void drawImage(BufferedImage img) {
-        setEnabled(false);
         clear();
 
         int imgWidth = img.getWidth();
@@ -125,6 +124,7 @@ class DrawArea extends JComponent {
 
         g2.drawImage(img, 0, 0, width, height, null);
         repaint();
+        setEnabled(false);
     }
 
     protected void paintComponent(Graphics g) {

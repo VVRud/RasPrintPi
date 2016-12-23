@@ -41,13 +41,19 @@ public class Analyzer extends Thread {
         if (mode == BEZ_MODE) {
             try {
                 analyzeCurve();
+                WorkspaceWindow.setInactiveTrue();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Failed writing to file!");
+                return;
             }
         } else if (mode == JPG_MODE) {
             analyzePicture();
-        } else WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
+            WorkspaceWindow.setInactiveTrue();
+        } else {
+            WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
+            WorkspaceWindow.setInactiveFalse();
+        }
 
 
         //Run after Analyzing

@@ -31,16 +31,16 @@ public class WorkspaceWindow extends JFrame {
 
     private static final JPanel workPanel = new JPanel(new GridBagLayout());
     private static JLabel fileDir;
-    private JButton chooseFileButton,
-            startButton,
-            stopButton,
-            saveFileButton,
-            clearButton;
-    private DrawArea drawArea;
+    private static JButton chooseFileButton;
+    private static JButton startButton;
+    private static JButton stopButton;
+    private static JButton saveFileButton;
+    private static JButton clearButton;
+    private static DrawArea drawArea;
 
-    private JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
-    private JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
-    private JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
+    private static JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
+    private static JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
+    private static JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
 
     public WorkspaceWindow() {
         super(TITLE + " | Opened on IP: " + LoginWindow.getIp() + ":" + LoginWindow.getPort());
@@ -81,6 +81,30 @@ public class WorkspaceWindow extends JFrame {
         return fileDir;
     }
 
+    public static void setInactiveFalse() {
+        drawArea.setEnabled(true);
+        chooseFileButton.setEnabled(true);
+        startButton.setEnabled(true);
+        stopButton.setEnabled(false);
+        saveFileButton.setEnabled(true);
+        clearButton.setEnabled(true);
+        speedList.setEnabled(true);
+        modeList.setEnabled(true);
+        intensityList.setEnabled(true);
+    }
+
+    public static void setInactiveTrue() {
+        drawArea.setEnabled(false);
+        chooseFileButton.setEnabled(false);
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        saveFileButton.setEnabled(false);
+        clearButton.setEnabled(false);
+        speedList.setEnabled(false);
+        modeList.setEnabled(false);
+        intensityList.setEnabled(false);
+    }
+
     private void saveFile() {
         File xml = PrintingData.getXmlFile();
         if (xml != null) {
@@ -101,6 +125,8 @@ public class WorkspaceWindow extends JFrame {
 
     private void chooseFile() {
         JFileChooser chooseDialog = new JFileChooser();
+        chooseDialog.addChoosableFileFilter(FILTER);
+        chooseDialog.setFileFilter(FILTER);
         int returnedFile = chooseDialog.showDialog(null, "Open file");
         if (returnedFile == JFileChooser.APPROVE_OPTION) {
             File file = chooseDialog.getSelectedFile();
@@ -168,7 +194,6 @@ public class WorkspaceWindow extends JFrame {
             analyzer.setMode(BEZ_MODE);
         }
         analyzer.start();
-        setInactiveTrue();
     }
 
     private void drawAreaCreate() {
@@ -252,30 +277,6 @@ public class WorkspaceWindow extends JFrame {
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
         stopButton.setEnabled(false);
 
-    }
-
-    private void setInactiveFalse() {
-        drawArea.setEnabled(true);
-        chooseFileButton.setEnabled(true);
-        startButton.setEnabled(true);
-        stopButton.setEnabled(false);
-        saveFileButton.setEnabled(true);
-        clearButton.setEnabled(true);
-        speedList.setEnabled(true);
-        modeList.setEnabled(true);
-        intensityList.setEnabled(true);
-    }
-
-    private void setInactiveTrue() {
-        drawArea.setEnabled(false);
-        chooseFileButton.setEnabled(false);
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
-        saveFileButton.setEnabled(false);
-        clearButton.setEnabled(false);
-        speedList.setEnabled(false);
-        modeList.setEnabled(false);
-        intensityList.setEnabled(false);
     }
 
     private String getFileExtension(File file) {
