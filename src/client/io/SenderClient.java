@@ -3,13 +3,9 @@ package client.io;
 import client.Client;
 import client.data.PrintingData;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
-import static client.data.Constants.BEZ_MODE;
-import static client.data.Constants.TXT_MODE;
+import static client.data.Constants.*;
 
 /**
  * Created by vvrud on 12.09.16.
@@ -19,22 +15,49 @@ import static client.data.Constants.TXT_MODE;
  */
 public class SenderClient extends Thread {
 
+    private boolean sent = false;
     private int mode = 1;
+
+    public SenderClient(int mode) {
+        this.mode = mode;
+    }
+
+    private static void sendOptions(ObjectOutputStream objectOutput) throws IOException {
+        objectOutput.writeObject(PrintingData.getOptions());
+        objectOutput.flush();
+    }
 
     @Override
     public void run() {
-
         boolean printingInterrupted = PrintingData.isPrintingInterrupted();
 
-        if (mode == TXT_MODE) {
-
+        DataOutputStream dataOutput = Client.getDataOutput();
+        ObjectOutputStream objectOutput = Client.getObjectOutput();
+        if (printingInterrupted) {
+            try {
+                dataOutput.writeInt(INTERRUPTION);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (mode == JPG_MODE) {
+            try {
+                dataOutput.writeInt(TXT);
+                sendOptions(objectOutput);
+                sendFile(dataOutput);
+            } catch (IOException e) {
+                System.out.println("Failed sending file or options!");
+                e.printStackTrace();
+            }
         } else if (mode == BEZ_MODE) {
-
-        } else if (!printingInterrupted) {
-
+            try {
+                dataOutput.writeInt(XML);
+                sendFile(dataOutput);
+            } catch (IOException e) {
+                System.out.println("Failed sending xml");
+                e.printStackTrace();
+            }
         }
 
-        DataOutputStream dataOutput = Client.getDataOutput();
 
         if (!printingInterrupted) {
             try {

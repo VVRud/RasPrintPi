@@ -24,7 +24,6 @@ public class Constants {
     //Modes
     public static final int BEZ_MODE = 1;
     public static final int JPG_MODE = 2;
-    public static final int TXT_MODE = 3;
 
     //Errors
     public static final String ERR_TITLE = "ERROR!";
@@ -32,11 +31,18 @@ public class Constants {
     public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
+    public static final String ERR_RUNNING_SENDER = "ERROR! Starting sending failed! Write to VlValRudenko@i.ua.";
+
 
     //Warnings
     public static final String WARN_TITLE = "WARNING!";
     public static final String EMPTY_DRAWING_LIST = "Printing is impossible now, you did'nt draw anything.";
     public static final String UNKNOWN_MODE = "Unknown mode! Please, try again.";
+
+    //Instructions
+    public static final int INTERRUPTION = 0;
+    public static final int TXT = 1;
+    public static final int XML = 2;
 
     //Data
     public static final String[] SPEED_DATA = {

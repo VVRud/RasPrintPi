@@ -38,10 +38,11 @@ public class Analyzer extends Thread {
 
     @Override
     public void run() {
+        boolean state = false;
         if (mode == BEZ_MODE) {
             try {
                 analyzeCurve();
-                WorkspaceWindow.setInactiveTrue();
+                runIO(BEZ_MODE);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Failed writing to file!");
@@ -49,18 +50,25 @@ public class Analyzer extends Thread {
             }
         } else if (mode == JPG_MODE) {
             analyzePicture();
-            WorkspaceWindow.setInactiveTrue();
+            runIO(JPG_MODE);
         } else {
             WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
             WorkspaceWindow.setInactiveFalse();
         }
 
+        if (state) {
+            //Run after Analyzing
 
-        //Run after Analyzing
-        SenderClient sender = new SenderClient();
+        } else {
+            System.out.println("Running sender and receiver failed");
+            WorkspaceWindow.showErrorMessage(ERR_RUNNING_SENDER);
+        }
+    }
+
+    private void runIO(int mode) {
+        SenderClient sender = new SenderClient(mode);
         sender.start();
         Client.setSender(sender);
-
         ReceiverClient receiver = new ReceiverClient();
         receiver.start();
         Client.setReceiver(receiver);

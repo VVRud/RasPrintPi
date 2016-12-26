@@ -105,6 +105,10 @@ public class WorkspaceWindow extends JFrame {
         intensityList.setEnabled(false);
     }
 
+    public static void showErrorMessage(String err) {
+        JOptionPane.showMessageDialog(workPanel, err, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+
     private void saveFile() {
         File xml = PrintingData.getXmlFile();
         if (xml != null) {
@@ -160,7 +164,7 @@ public class WorkspaceWindow extends JFrame {
         if (receiver.isAlive()) {
             receiver.interrupt();
         }
-        SenderClient sender = new SenderClient();
+        SenderClient sender = new SenderClient(INTERRUPTION);
         sender.start();
     }
 
