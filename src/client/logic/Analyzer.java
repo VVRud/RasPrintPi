@@ -92,7 +92,7 @@ public class Analyzer extends Thread {
                 int lxs = lx.size();
                 int lys = ly.size();
 
-                writer.write("\t<Element>");
+                writer.write("\t<Element>\n");
 
                 if (lxs == 0 && lys == 0) {
                     System.out.println("Something went wrong! List is empty!");
@@ -100,7 +100,7 @@ public class Analyzer extends Thread {
                     writer.write(
                             "\t\t<type>Point</type>\n" +
                             "\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
-                            "\t\t<yCoord>" + ly.get(0) + "</yCoord>");
+                                    "\t\t<yCoord>" + ly.get(0) + "</yCoord>\n");
                     System.out.printf("Point(%d; %d)\n", lx.get(0), ly.get(0));
                 } else if (lxs == 2 && lys == 2) {
                     writer.write(
@@ -112,7 +112,7 @@ public class Analyzer extends Thread {
                             "\t\t<point1>\n" +
                             "\t\t\t<xCoord>" + lx.get(1) + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + ly.get(1) + "</yCoord>\n" +
-                            "\t\t</point1>");
+                                    "\t\t</point1>\n");
                     System.out.printf("Line(%d; %d)->(%d; %d)\n", lx.get(0), ly.get(0), lx.get(1), ly.get(1));
                 } else if (lxs == 3 && lys == 3) {
                     int p0x = lx.get(0);
@@ -135,7 +135,7 @@ public class Analyzer extends Thread {
                             "\t\t<point2>\n" +
                             "\t\t\t<xCoord>" + p2x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p2y + "</yCoord>\n" +
-                            "\t\t</point2>");
+                                    "\t\t</point2>\n");
                 } else if ((lxs >= 4 && lxs <= 28) && (lys >= 4 && lys <= 28)) {
                     int p0x = lx.get(0);
                     int p0y = ly.get(0);
@@ -163,9 +163,9 @@ public class Analyzer extends Thread {
                             "\t\t<point3>\n" +
                             "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
-                            "\t\t</point3>");
+                                    "\t\t</point3>\n");
                 } else if (lxs > 28 && lys > 28) {
-                    double num = (lxs - 1) / 3;
+                    float num = ((float) lxs - 1) / 3;
                     int curves = 3;
 
                     while (!((num >= 10 + 5 * (curves - 3)) && (num < 10 + 5 * (curves - 2)))) {
@@ -175,12 +175,12 @@ public class Analyzer extends Thread {
                     int pointsCount = 3 * curves + 1;
                     System.out.printf("BezierPath. Points in list: %d. Curves: %d. Points to XML: %d\n", lxs, curves, pointsCount);
 
-                    float coefficient = (float) pointsCount / (float) lxs;
+                    float coefficient = (float) lxs / (float) pointsCount;
                     int coef0, coef1, coef2, coef3;
-                    int p0x = 0, p1x, p2x, p3x,
+                    float p0x = 0, p1x, p2x, p3x,
                             p0y = 0, p1y, p2y, p3y;
 
-                    for (int j = 0; j < pointsCount; j = j + 3) {
+                    for (int j = 0; j < pointsCount - 1; j = j + 3) {
                         coef0 = (int) (j * coefficient);
                         coef1 = (int) ((j + 1) * coefficient);
                         coef2 = (int) ((j + 2) * coefficient);
@@ -225,7 +225,7 @@ public class Analyzer extends Thread {
                     }
                 }
 
-                writer.write("\t</Element>");
+                writer.write("\t</Element>\n");
             }
             writer.write("</Elements>");
             fw.flush();
@@ -242,11 +242,11 @@ public class Analyzer extends Thread {
         //TODO Set PrintingData.setTxtFileCreated(txtFile);
     }
 
-    private float findFirstPointBez3(int p0, int p1, int p2, int p3) {
+    private float findFirstPointBez3(float p0, float p1, float p2, float p3) {
         return (-5 * p0 + 18 * p1 - 9 * p2 + 2 * p3) / 6;
     }
 
-    private float findSecondPointBez3(int p0, int p1, int p2, int p3) {
+    private float findSecondPointBez3(float p0, float p1, float p2, float p3) {
         return (-5 * p3 + 18 * p2 - 9 * p1 + 2 * p0) / 6;
     }
 
