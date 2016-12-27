@@ -11,18 +11,23 @@ import java.util.HashMap;
  */
 public class PrintingData {
 
-    private static File xmlFile;
-    private static File jpgFile;
-    private static File txtFile;
+    private static File xmlFileCreated;
+    private static File jpgFileCreated;
+    private static File txtFileCreated;
+
+    private static File xmlFileChosen;
+    private static File jpgFileChosen;
+    private static File txtFileChosen;
+
     private static HashMap<String, String> options;
     private static boolean printingInterrupted;
 
-    public static File getJpgFile() {
-        return jpgFile;
+    public static File getJpgFileCreated() {
+        return jpgFileCreated;
     }
 
-    public static void setJpgFile(File jpgFile) {
-        PrintingData.jpgFile = jpgFile;
+    public static void setJpgFileCreated(File jpgFileCreated) {
+        PrintingData.jpgFileCreated = jpgFileCreated;
     }
 
     public static boolean isPrintingInterrupted() {
@@ -41,19 +46,43 @@ public class PrintingData {
         PrintingData.options = options;
     }
 
-    public static File getXmlFile() {
-        return xmlFile;
+    public static File getXmlFileCreated() {
+        return xmlFileCreated;
     }
 
-    public static void setXmlFile(File xmlFile) {
-        PrintingData.xmlFile = xmlFile;
+    public static void setXmlFileCreated(File xmlFileCreated) {
+        PrintingData.xmlFileCreated = xmlFileCreated;
     }
 
-    public static File getTxtFile() {
-        return txtFile;
+    public static File getTxtFileCreated() {
+        return txtFileCreated;
     }
 
-    public static void setTxtFile(File txtFile) {
-        PrintingData.txtFile = txtFile;
+    public static void setTxtFileCreated(File txtFileCreated) {
+        PrintingData.txtFileCreated = txtFileCreated;
+    }
+
+    public static File getXmlFileChosen() {
+        return xmlFileChosen;
+    }
+
+    public static void setXmlFileChosen(File xmlFileChosen) {
+        PrintingData.xmlFileChosen = xmlFileChosen;
+    }
+
+    public static File getJpgFileChosen() {
+        return jpgFileChosen;
+    }
+
+    public static void setJpgFileChosen(File jpgFileChosen) {
+        PrintingData.jpgFileChosen = jpgFileChosen;
+    }
+
+    public static File getTxtFileChosen() {
+        return txtFileChosen;
+    }
+
+    public static void setTxtFileChosen(File txtFileChosen) {
+        PrintingData.txtFileChosen = txtFileChosen;
     }
 }

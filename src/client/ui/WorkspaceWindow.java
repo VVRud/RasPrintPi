@@ -110,19 +110,41 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void saveFile() {
-        File xml = PrintingData.getXmlFile();
-        if (xml != null) {
-            JFileChooser saveDialog = new JFileChooser();
-            saveDialog.addChoosableFileFilter(FILTER);
-            saveDialog.setFileFilter(FILTER);
-            if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    File f = saveDialog.getSelectedFile();
+        putOptions();
+
+        File jpg = null;
+        File xml = null;
+        File txt = null;
+
+        Analyzer analyzer = drawArea.getAnalyzer();
+        if (drawArea.isActive()) {
+            analyzer.setMode(BEZ_MODE, false);
+            analyzer.run();
+            drawArea.graphicsToImage();
+            jpg = PrintingData.getJpgFileCreated();
+            xml = PrintingData.getXmlFileCreated();
+        }
+        if (drawArea.isImageDrawn()) {
+            analyzer.setMode(JPG_MODE, false);
+            analyzer.run();
+            txt = PrintingData.getTxtFileCreated();
+        }
+
+        JFileChooser saveDialog = new JFileChooser();
+        saveDialog.addChoosableFileFilter(FILTER);
+        saveDialog.setFileFilter(FILTER);
+        if (saveDialog.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File f = saveDialog.getSelectedFile();
+                if (jpg != null)
+                    Files.copy(jpg.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (xml != null)
                     Files.copy(xml.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("Всё погибло!");
-                }
+                if (txt != null)
+                    Files.copy(txt.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Всё погибло!");
             }
         }
     }
@@ -140,15 +162,15 @@ public class WorkspaceWindow extends JFrame {
                 try {
                     BufferedImage in = ImageIO.read(file);
                     drawArea.drawImage(in);
-                    PrintingData.setJpgFile(file);
+                    PrintingData.setJpgFileChosen(file);
                 } catch (IOException e) {
                     System.out.println("Failed reading image");
                     e.printStackTrace();
                 }
             } else if (ext.equals("xml")) {
-                PrintingData.setXmlFile(file);
+                PrintingData.setXmlFileChosen(file);
             } else if (ext.equals("txt")) {
-                PrintingData.setTxtFile(file);
+                PrintingData.setTxtFileChosen(file);
             }
 
 
@@ -169,6 +191,30 @@ public class WorkspaceWindow extends JFrame {
     }
 
     private void startPrinting() {
+        putOptions();
+        PrintingData.setPrintingInterrupted(false);
+
+        Analyzer analyzer = drawArea.getAnalyzer();
+        if ((PrintingData.getTxtFileCreated() != null || PrintingData.getXmlFileCreated() != null)
+                && drawArea.isActive()) {
+            ModeChooser chooser = new ModeChooser(this);
+            String anMode = chooser.execute();
+            if (anMode != null) {
+                if (anMode.equals("Analyze Drawing")) {
+                    analyzer.setMode(BEZ_MODE, true);
+                } else if (anMode.equals("Analyze Chosen File")) {
+                    analyzer.setMode(JPG_MODE, true);
+                }
+            } else return;
+        } else if (PrintingData.getJpgFileCreated() != null) {
+            analyzer.setMode(JPG_MODE, true);
+        } else if (drawArea.isActive()) {
+            analyzer.setMode(BEZ_MODE, true);
+        }
+        analyzer.start();
+    }
+
+    private void putOptions() {
         String speed = String.valueOf(speedList.getSelectedItem());
         String mode = String.valueOf(modeList.getSelectedItem());
         String intensity = String.valueOf(intensityList.getSelectedItem());
@@ -179,25 +225,6 @@ public class WorkspaceWindow extends JFrame {
         options.put("Mode", mode);
 
         PrintingData.setOptions(options);
-        PrintingData.setPrintingInterrupted(false);
-
-        Analyzer analyzer = drawArea.getAnalyzer();
-        if ((PrintingData.getTxtFile() != null || PrintingData.getXmlFile() != null) && drawArea.isActive()) {
-            ModeChooser chooser = new ModeChooser(this);
-            String anMode = chooser.execute();
-            if (anMode != null) {
-                if (anMode.equals("Analyze Drawing")) {
-                    analyzer.setMode(BEZ_MODE);
-                } else if (anMode.equals("Analyze Chosen File")) {
-                    analyzer.setMode(JPG_MODE);
-                }
-            } else return;
-        } else if (PrintingData.getJpgFile() != null) {
-            analyzer.setMode(JPG_MODE);
-        } else if (drawArea.isActive()) {
-            analyzer.setMode(BEZ_MODE);
-        }
-        analyzer.start();
     }
 
     private void drawAreaCreate() {

@@ -57,30 +57,10 @@ public class SenderClient extends Thread {
                 e.printStackTrace();
             }
         }
-
-
-        if (!printingInterrupted) {
-            try {
-                dataOutput.writeBoolean(printingInterrupted);
-                sendFile(dataOutput);
-            } catch (IOException e) {
-                System.out.println("Failed sending interruption false with file");
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                dataOutput.writeBoolean(printingInterrupted);
-                System.out.println("Interruption sent");
-            } catch (IOException e) {
-                System.out.println("Failed sending interruption true");
-                e.printStackTrace();
-            }
-
-        }
     }
 
     private void sendFile(DataOutputStream dataOutput) throws IOException {
-        File file = PrintingData.getJpgFile();
+        File file = PrintingData.getJpgFileCreated();
         if (file != null) {
             FileInputStream input = new FileInputStream(file);
             long size = file.length();

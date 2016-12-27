@@ -25,6 +25,7 @@ public class Analyzer extends Thread {
     private static ArrayList<ArrayList<Integer>> listX = new ArrayList<>();
     private static ArrayList<ArrayList<Integer>> listY = new ArrayList<>();
     private int mode = 1;
+    private boolean send = false;
 
     public void addToAnalyze(ArrayList<Integer> listXDraw, ArrayList<Integer> listYDraw) {
         listX.add(listXDraw);
@@ -38,30 +39,20 @@ public class Analyzer extends Thread {
 
     @Override
     public void run() {
-        boolean state = false;
         if (mode == BEZ_MODE) {
             try {
                 analyzeCurve();
-                runIO(BEZ_MODE);
+                if (send) runIO(BEZ_MODE);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Failed writing to file!");
-                return;
             }
         } else if (mode == JPG_MODE) {
             analyzePicture();
-            runIO(JPG_MODE);
+            if (send) runIO(JPG_MODE);
         } else {
             WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
             WorkspaceWindow.setInactiveFalse();
-        }
-
-        if (state) {
-            //Run after Analyzing
-
-        } else {
-            System.out.println("Running sender and receiver failed");
-            WorkspaceWindow.showErrorMessage(ERR_RUNNING_SENDER);
         }
     }
 
@@ -86,13 +77,13 @@ public class Analyzer extends Thread {
 
             writer.write(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                            "<Elements>" +
+                            "<Elements>\n" +
                             "\t<Element>\n" +
                             "\t\t<type>Options</type>\n" +
                             "\t\t<mode>" + PrintingData.getOptions().get("Mode") + "</mode>\n" +
                             "\t\t<intensity>" + PrintingData.getOptions().get("Intensity") + "</intensity>\n" +
                             "\t\t<speed>" + PrintingData.getOptions().get("Speed") + "</speed>\n" +
-                            "\t</Element>");
+                            "\t</Element>\n");
 
             for (int i = 0; i < listX.size() || i < listY.size(); i++) {
                 lx = listX.get(i);
@@ -184,7 +175,7 @@ public class Analyzer extends Thread {
                     int pointsCount = 3 * curves + 1;
                     System.out.printf("BezierPath. Points in list: %d. Curves: %d. Points to XML: %d\n", lxs, curves, pointsCount);
 
-                    double coefficient = pointsCount / lxs;
+                    float coefficient = (float) pointsCount / (float) lxs;
                     int coef0, coef1, coef2, coef3;
                     int p0x = 0, p1x, p2x, p3x,
                             p0y = 0, p1y, p2y, p3y;
@@ -227,7 +218,7 @@ public class Analyzer extends Thread {
                                         "\t\t<point" + (j + 3) + ">\n" +
                                         "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                                         "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
-                                        "\t\t</point" + (j + 3) + ">");
+                                        "\t\t</point" + (j + 3) + ">\n");
 
                         p0x = p3x;
                         p0y = p3y;
@@ -242,27 +233,29 @@ public class Analyzer extends Thread {
             fw.close();
             writer.close();
 
-            PrintingData.setXmlFile(xmlFile);
+            PrintingData.setXmlFileCreated(xmlFile);
         }
     }
 
     private void analyzePicture() {
-        //TODO Picture Analyzing method
+        System.out.println("TXT file created!");
+        //TODO Set PrintingData.setTxtFileCreated(txtFile);
     }
 
-    private double findFirstPointBez3(int p0, int p1, int p2, int p3) {
+    private float findFirstPointBez3(int p0, int p1, int p2, int p3) {
         return (-5 * p0 + 18 * p1 - 9 * p2 + 2 * p3) / 6;
     }
 
-    private double findSecondPointBez3(int p0, int p1, int p2, int p3) {
+    private float findSecondPointBez3(int p0, int p1, int p2, int p3) {
         return (-5 * p3 + 18 * p2 - 9 * p1 + 2 * p0) / 6;
     }
 
-    private double findPointBez2(int p0, int p1, int p2) {
-        return 0.25 * p1 - p0 - p2;
+    private float findPointBez2(int p0, int p1, int p2) {
+        return (float) (0.25 * p1 - p0 - p2);
     }
 
-    public void setMode(int mode) {
+    public void setMode(int mode, boolean send) {
         this.mode = mode;
+        this.send = send;
     }
 }

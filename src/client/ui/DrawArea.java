@@ -3,12 +3,15 @@ package client.ui;
 import client.data.PrintingData;
 import client.logic.Analyzer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +25,7 @@ class DrawArea extends JComponent {
     private Graphics2D g2;
     private boolean mouseMoved;
     private boolean active = false;
+    private boolean imageDrawn = false;
 
     private int beginX, beginY, endX, endY;
     private int currentX, currentY, oldX, oldY;
@@ -106,6 +110,7 @@ class DrawArea extends JComponent {
 
     void drawImage(BufferedImage img) {
         clear();
+        imageDrawn = true;
 
         int imgWidth = img.getWidth();
         int imgHeight = img.getHeight();
@@ -144,9 +149,10 @@ class DrawArea extends JComponent {
         g2.setPaint(Color.black);
         repaint();
         setEnabled(true);
+        if (imageDrawn) imageDrawn = false;
         if (active) active = false;
-        if (PrintingData.getJpgFile() != null) {
-            PrintingData.setJpgFile(null);
+        if (PrintingData.getJpgFileCreated() != null) {
+            PrintingData.setJpgFileCreated(null);
             WorkspaceWindow.getFileDir().setText("<file directory here>");
         }
     }
@@ -157,5 +163,21 @@ class DrawArea extends JComponent {
 
     boolean isActive() {
         return active;
+    }
+
+    boolean isImageDrawn() {
+        return imageDrawn;
+    }
+
+    void graphicsToImage() {
+        BufferedImage bufferedImage = (BufferedImage) image;
+        try {
+            File imgFile = File.createTempFile("jpg_rpp_", "jpg");
+            ImageIO.write(bufferedImage, "jpg", imgFile);
+            PrintingData.setJpgFileCreated(imgFile);
+        } catch (IOException e) {
+            System.out.println("Failed creating an Image!");
+            e.printStackTrace();
+        }
     }
 }
