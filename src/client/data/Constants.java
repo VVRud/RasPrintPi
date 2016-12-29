@@ -15,7 +15,8 @@ public class Constants {
 
     public static final String TITLE = "RasPrintPi";
     public static final Dimension CANVAS_SIZE = new Dimension(420, 420);
-    public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files", "xml", "jpg", "jpeg");
+    public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files",
+            "xml", "jpg", "jpeg");
 
     //TODO Set default ip and port
     public static final String DEFAULT_IP = "localhost";
@@ -31,7 +32,9 @@ public class Constants {
     public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
-    public static final String ERR_RUNNING_SENDER = "ERROR! Starting sending failed! Write to VlValRudenko@i.ua.";
+    public static final String RUNNING_SENDER_ERR = "ERROR! Starting sending failed! Write to VlValRudenko@i.ua.";
+    public static final String CHOOSING_FILE_ERR = "You might have chosen file without extension." +
+            "Choose the right file, please.";
 
 
     //Warnings

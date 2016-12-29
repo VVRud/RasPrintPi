@@ -77,8 +77,8 @@ public class WorkspaceWindow extends JFrame {
         JOptionPane.showMessageDialog(workPanel, message, WARN_TITLE, JOptionPane.WARNING_MESSAGE);
     }
 
-    static JLabel getFileDir() {
-        return fileDir;
+    public static void showErrorMessage(String err) {
+        JOptionPane.showMessageDialog(workPanel, err, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 
     public static void setInactiveFalse() {
@@ -91,6 +91,10 @@ public class WorkspaceWindow extends JFrame {
         speedList.setEnabled(true);
         modeList.setEnabled(true);
         intensityList.setEnabled(true);
+    }
+
+    static JLabel getFileDir() {
+        return fileDir;
     }
 
     private void saveFile() {
@@ -138,6 +142,10 @@ public class WorkspaceWindow extends JFrame {
                 System.out.println("Всё погибло!");
             }
         }
+
+        PrintingData.setJpgFileCreated(null);
+        PrintingData.setXmlFileCreated(null);
+        PrintingData.setTxtFileCreated(null);
     }
 
     private void chooseFile() {
@@ -149,26 +157,27 @@ public class WorkspaceWindow extends JFrame {
             File file = chooseDialog.getSelectedFile();
 
             String ext = getFileExtension(file);
-            switch (ext) {
-                case "jpg":
-                case "jpeg":
-                    try {
-                        BufferedImage in = ImageIO.read(file);
-                        drawArea.drawImage(in);
-                        PrintingData.setJpgFileChosen(file);
-                    } catch (IOException e) {
-                        System.out.println("Failed reading image");
-                        e.printStackTrace();
-                    }
-                    break;
-                case "xml":
-                    PrintingData.setXmlFileChosen(file);
-                    break;
-                case "txt":
-                    PrintingData.setTxtFileChosen(file);
-                    break;
-            }
-
+            if (ext != null) {
+                switch (ext) {
+                    case "jpg":
+                    case "jpeg":
+                        try {
+                            BufferedImage in = ImageIO.read(file);
+                            drawArea.drawImage(in);
+                            PrintingData.setJpgFileChosen(file);
+                        } catch (IOException e) {
+                            System.out.println("Failed reading image");
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "xml":
+                        PrintingData.setXmlFileChosen(file);
+                        break;
+                    case "txt":
+                        PrintingData.setTxtFileChosen(file);
+                        break;
+                }
+            } else showErrorMessage(CHOOSING_FILE_ERR);
 
             fileDir.setText(file.getName());
         }
@@ -191,7 +200,7 @@ public class WorkspaceWindow extends JFrame {
         PrintingData.setPrintingInterrupted(false);
 
         Analyzer analyzer = drawArea.getAnalyzer();
-        if ((PrintingData.getTxtFileCreated() != null || PrintingData.getXmlFileCreated() != null)
+        if ((PrintingData.getTxtFileChosen() != null || PrintingData.getXmlFileChosen() != null)
                 && drawArea.isActive()) {
             ModeChooser chooser = new ModeChooser(this);
             String anMode = chooser.execute();
@@ -310,14 +319,19 @@ public class WorkspaceWindow extends JFrame {
         String fileName = file.getName();
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
             return fileName.substring(fileName.lastIndexOf(".") + 1);
-        else return "";
+        else return null;
     }
 
     private File getFileWithExtension(File file, String ext) {
         String filePath = file.getAbsolutePath().replaceAll(file.getName(), "");
         String extension = getFileExtension(file);
-        String fileName = file.getName().replaceAll(extension, ext);
-        if (ext.equals(extension)) return file;
-        else return new File(filePath + fileName);
+        if (extension != null) {
+            String fileName = file.getName().replaceAll(extension, ext);
+            if (ext.equals(extension)) return file;
+            else return new File(filePath + fileName);
+        } else {
+            String fileName = file.getName() + "." + ext;
+            return new File(filePath + fileName);
+        }
     }
 }
