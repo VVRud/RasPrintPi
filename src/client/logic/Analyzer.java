@@ -71,7 +71,7 @@ public class Analyzer extends Thread {
         } else {
             ArrayList<Integer> lx;
             ArrayList<Integer> ly;
-            File xmlFile = File.createTempFile("rpi_xml_tmp_", ".xml");
+            File xmlFile = File.createTempFile("rppi_xml_tmp_", ".xml");
             FileWriter fw = new FileWriter(xmlFile);
             BufferedWriter writer = new BufferedWriter(fw);
 

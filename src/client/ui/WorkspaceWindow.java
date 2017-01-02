@@ -191,7 +191,7 @@ public class WorkspaceWindow extends JFrame {
         if (receiver.isAlive()) {
             receiver.interrupt();
         }
-        SenderClient sender = new SenderClient(INTERRUPTION);
+        SenderClient sender = new SenderClient(INTERRUPT);
         sender.start();
     }
 

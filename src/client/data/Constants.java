@@ -43,9 +43,10 @@ public class Constants {
     public static final String UNKNOWN_MODE = "Unknown mode! Please, try again.";
 
     //Instructions
-    public static final int INTERRUPTION = 0;
+    public static final int INTERRUPT = 0;
     public static final int TXT = 1;
     public static final int XML = 2;
+    public static final int SHUTDOWN = 3;
 
     //Data
     public static final String[] SPEED_DATA = {

@@ -15,7 +15,6 @@ import static client.data.Constants.*;
  */
 public class SenderClient extends Thread {
 
-    private boolean sent = false;
     private int mode = 1;
 
     public SenderClient(int mode) {
@@ -35,7 +34,7 @@ public class SenderClient extends Thread {
         ObjectOutputStream objectOutput = Client.getObjectOutput();
         if (printingInterrupted) {
             try {
-                dataOutput.writeInt(INTERRUPTION);
+                dataOutput.writeInt(INTERRUPT);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -43,7 +42,7 @@ public class SenderClient extends Thread {
             try {
                 dataOutput.writeInt(TXT);
                 sendOptions(objectOutput);
-                sendFile(dataOutput);
+                sendFile(dataOutput, TXT);
             } catch (IOException e) {
                 System.out.println("Failed sending file or options!");
                 e.printStackTrace();
@@ -51,7 +50,7 @@ public class SenderClient extends Thread {
         } else if (mode == BEZ_MODE) {
             try {
                 dataOutput.writeInt(XML);
-                sendFile(dataOutput);
+                sendFile(dataOutput, XML);
             } catch (IOException e) {
                 System.out.println("Failed sending xml");
                 e.printStackTrace();
@@ -59,18 +58,22 @@ public class SenderClient extends Thread {
         }
     }
 
-    private void sendFile(DataOutputStream dataOutput) throws IOException {
-        File file = PrintingData.getJpgFileCreated();
+    private void sendFile(DataOutputStream dataOutput, int type) throws IOException {
+        File file;
+        if (type == TXT) {
+            file = PrintingData.getTxtFileCreated();
+        } else if (type == XML) {
+            file = PrintingData.getXmlFileCreated();
+        } else throw new RuntimeException("Type is unknown");
+
         if (file != null) {
             FileInputStream input = new FileInputStream(file);
             long size = file.length();
             byte[] buffer = new byte[(int) size];
 
             dataOutput.writeLong(size);
-            dataOutput.writeUTF(file.getName());
 
             int in;
-
             while ((in = input.read(buffer)) != -1) {
                 dataOutput.write(buffer, 0, in);
             }
@@ -78,9 +81,5 @@ public class SenderClient extends Thread {
             input.close();
             dataOutput.flush();
         } else throw new IOException("File is null");
-    }
-
-    public void setMode(int mode) {
-        this.mode = mode;
     }
 }
