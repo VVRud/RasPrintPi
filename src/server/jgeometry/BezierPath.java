@@ -1,4 +1,4 @@
-package jgeometry;
+package server.jgeometry;
 
 import java.util.LinkedList;
 

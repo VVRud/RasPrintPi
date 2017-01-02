@@ -1,4 +1,4 @@
-package jgeometry;
+package server.jgeometry;
 
 /**
  * Created by vvrud on 29.11.16.

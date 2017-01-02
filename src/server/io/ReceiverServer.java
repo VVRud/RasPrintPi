@@ -1,11 +1,11 @@
 package server.io;
 
-import server.Interrupter;
 import server.Printer;
 import server.Server;
 import server.data.PrintingData;
 
 import java.io.*;
+import java.net.SocketException;
 import java.util.HashMap;
 
 /**
@@ -16,9 +16,16 @@ import java.util.HashMap;
  *         It gets file and options to print.
  *         It also check if program interrupted.
  */
-public class GetterServer extends Thread {
+public class ReceiverServer extends Thread {
 
+    private static final int INTERRUPT = 0;
+    private static final int TXT = 1;
+    private static final int XML = 2;
+    private static final int SHUTDOWN = 3;
     private static Printer printer;
+    private int currentState = -1;
+    private DataInputStream dataInput = Server.getDataInput();
+    private ObjectInputStream objectInput = Server.getObjectInput();
 
     public static Printer getPrinter() {
         return printer;
@@ -26,38 +33,34 @@ public class GetterServer extends Thread {
 
     @Override
     public void run() {
-        boolean printingInterrupted = false;
-        DataInputStream dataInput = Server.getDataInput();
-        ObjectInputStream objectInput = Server.getObjectInput();
-
-        try {
-            printingInterrupted = dataInput.readBoolean();
-        } catch (IOException e) {
-            System.out.println("interruption reading failed");
-            e.printStackTrace();
-        }
-
-        if (!printingInterrupted) {
+        while (currentState != SHUTDOWN) {
             try {
-                inputOptions(objectInput);
-                inputFile(dataInput);
+                currentState = dataInput.readInt();
+                if (currentState == TXT) {
+                    inputOptions(objectInput);
+                    inputFile(dataInput, "txt");
+                } else if (currentState == XML) {
+                    inputFile(dataInput, "xml");
+                } else if (currentState == INTERRUPT) {
+                    interruptPrinting();
+                }
+            } catch (SocketException e) {
+                currentState = SHUTDOWN;
+                e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("Failed input data");
+                System.out.println("Reading failed");
                 e.printStackTrace();
             }
+        }
+    }
 
-            Interrupter interrupter = new Interrupter(printingInterrupted);
-            printer = new Printer();
-            printer.start();
-            interrupter.start();
-        } else {
-            Interrupter interrupter = new Interrupter(printingInterrupted);
-            interrupter.start();
+    private void interruptPrinting() {
+        if (printer != null && printer.isAlive()) {
+            printer.stopPrinting();
         }
     }
 
     private void inputOptions(ObjectInputStream objectInput) throws IOException {
-        //TODO прием объекта
         HashMap<String, String> options = null;
         try {
             options = (HashMap<String, String>) objectInput.readObject();
@@ -65,19 +68,15 @@ public class GetterServer extends Thread {
             System.out.println("Class was not found!");
             e.printStackTrace();
         }
-        System.out.println(options.get("Speed"));
-        System.out.println(options.get("Mode"));
-        System.out.println(options.get("Intensity"));
         PrintingData.setOptions(options);
     }
 
-    private void inputFile(DataInputStream input) throws IOException {
+    private void inputFile(DataInputStream input, String type) throws IOException {
         long size = input.readLong();
-        String fileName = input.readUTF();
-        String fileFolder = "/home/vvrud/RasPrintPiPictures/";
 
-        new File(fileFolder).mkdir();
-        FileOutputStream outF = new FileOutputStream(fileFolder + fileName);
+        File file = File.createTempFile("rppi_tmp_", "." + type);
+
+        FileOutputStream outF = new FileOutputStream(file);
 
         byte[] buffer = new byte[(int) size];
 
@@ -99,7 +98,11 @@ public class GetterServer extends Thread {
 
         outF.flush();
         outF.close();
-        PrintingData.setFile(new File(fileFolder + fileName));
+        PrintingData.setFile(file);
         System.out.println(PrintingData.getFile());
+    }
+
+    public int getCurrentState() {
+        return currentState;
     }
 }

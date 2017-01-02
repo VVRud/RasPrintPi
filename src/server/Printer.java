@@ -1,13 +1,12 @@
 package server;
 
+import com.pi4j.component.motor.impl.GpioStepperMotorComponent;
 import server.data.Analyzer;
 import server.data.PrintingData;
 
 import java.util.HashMap;
 
-//import static server.data.PrintingData.PINS_X;
-//import static server.data.PrintingData.PINS_Y;
-//import static server.data.PrintingData.PINS_Z;
+import static server.data.PrintingData.*;
 
 /**
  * Created by vvrud on 18.09.16.
@@ -16,10 +15,10 @@ import java.util.HashMap;
  *         This class provides printing the picture.
  */
 public class Printer extends Thread {
-//TODO OPEN GPIO
-//    private static GpioStepperMotorComponent motorX = new GpioStepperMotorComponent(PINS_X);
-//    private static GpioStepperMotorComponent motorY = new GpioStepperMotorComponent(PINS_Y);
-//    private static GpioStepperMotorComponent motorZ = new GpioStepperMotorComponent(PINS_Z);
+
+    private static GpioStepperMotorComponent motorX = new GpioStepperMotorComponent(PINS_X);
+    private static GpioStepperMotorComponent motorY = new GpioStepperMotorComponent(PINS_Y);
+    private static GpioStepperMotorComponent motorZ = new GpioStepperMotorComponent(PINS_Z);
     
     @Override
     public void run() {
@@ -80,5 +79,9 @@ public class Printer extends Thread {
 
     private void printPictureDrawing() {
         //TODO DO DRAWING METHOD
+    }
+
+    public void stopPrinting() {
+
     }
 }

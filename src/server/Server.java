@@ -1,6 +1,6 @@
 package server;
 
-import server.io.GetterServer;
+import server.io.ReceiverServer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -16,7 +16,6 @@ import java.net.Socket;
 
 public class Server {
 
-    private static Socket serverSocket;
     private static DataInputStream dataInput;
     private static DataOutputStream dataOutput;
     private static ObjectInputStream objectInput;
@@ -28,17 +27,15 @@ public class Server {
         try {
             ServerSocket ss = new ServerSocket(port);
             System.out.println("Waiting for a client...");
-            serverSocket = ss.accept();
-            System.out.println("Have got a client!");
-            System.out.println();
+            Socket serverSocket = ss.accept();
+            System.out.println("Have got a client!\n");
 
             dataInput = new DataInputStream(serverSocket.getInputStream());
             objectInput = new ObjectInputStream(dataInput);
             objectOutput = new ObjectOutputStream(new DataOutputStream(serverSocket.getOutputStream()));
 
-            GetterServer getter = new GetterServer();
+            new ReceiverServer().start();
             System.out.println("Getter started!");
-            getter.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

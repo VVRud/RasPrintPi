@@ -1,5 +1,7 @@
 package server.data;
 
+import com.pi4j.io.gpio.*;
+
 import java.io.File;
 import java.util.HashMap;
 
@@ -11,29 +13,25 @@ import java.util.HashMap;
  */
 public class PrintingData {
 
+    private static final GpioController gpio = GpioFactory.getInstance();
+    //TODO set right GPIO pins
+    public static final GpioPinDigitalOutput[] PINS_X = {
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
+    public static final GpioPinDigitalOutput[] PINS_Y = {
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
+    public static final GpioPinDigitalOutput[] PINS_Z = {
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
     private static File file;
     private static HashMap<String, String> options;
-
-    //private static final GpioController gpio = GpioFactory.getInstance();
-
-    //TODO set right GPIO pins
-//    public static final GpioPinDigitalOutput[] PINS_X = {
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
-//
-//    public static final GpioPinDigitalOutput[] PINS_Y = {
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
-//
-//    public static final GpioPinDigitalOutput[] PINS_Z = {
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-//            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
 
     public static File getFile() {
         return file;
