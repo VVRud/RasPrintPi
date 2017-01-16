@@ -99,20 +99,22 @@ public class Analyzer extends Thread {
                 } else if (lxs == 1 && lys == 1) {
                     writer.write(
                             "\t\t<type>Point</type>\n" +
-                            "\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
-                                    "\t\t<yCoord>" + ly.get(0) + "</yCoord>\n");
+                                    "\t\t<point>\n" +
+                                    "\t\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
+                                    "\t\t\t<yCoord>" + ly.get(0) + "</yCoord>\n" +
+                                    "\t\t</point>\n");
                     System.out.printf("Point(%d; %d)\n", lx.get(0), ly.get(0));
                 } else if (lxs == 2 && lys == 2) {
                     writer.write(
                             "\t\t<type>Line</type>\n" +
-                            "\t\t<point0>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + lx.get(0) + "</xCoord>\n" +
-                            "\t\t\t<yCoord" + ly.get(0) + "</yCoord>\n" +
-                            "\t\t</point0>\n" +
-                            "\t\t<point1>\n" +
+                                    "\t\t\t<yCoord>" + ly.get(0) + "</yCoord>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + lx.get(1) + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + ly.get(1) + "</yCoord>\n" +
-                                    "\t\t</point1>\n");
+                                    "\t\t</point>\n");
                     System.out.printf("Line(%d; %d)->(%d; %d)\n", lx.get(0), ly.get(0), lx.get(1), ly.get(1));
                 } else if (lxs == 3 && lys == 3) {
                     int p0x = lx.get(0);
@@ -124,18 +126,18 @@ public class Analyzer extends Thread {
 
                     writer.write(
                             "\t\t<type>BezierCurve2</type>\n" +
-                            "\t\t<point0>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
-                            "\t\t</point0>\n" +
-                            "\t\t<point1>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + findPointBez2(p0x, p1x, p2x) + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + findPointBez2(p0y, p1y, p2y) + "</yCoord>\n" +
-                            "\t\t</point1>\n" +
-                            "\t\t<point2>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + p2x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p2y + "</yCoord>\n" +
-                                    "\t\t</point2>\n");
+                                    "\t\t</point>\n");
                 } else if ((lxs >= 4 && lxs <= 28) && (lys >= 4 && lys <= 28)) {
                     int p0x = lx.get(0);
                     int p0y = ly.get(0);
@@ -148,22 +150,22 @@ public class Analyzer extends Thread {
 
                     writer.write(
                             "\t\t<type>BezierCurve3</type>\n" +
-                            "\t\t<point0>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
-                            "\t\t</point0>\n" +
-                            "\t\t<point1>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + findFirstPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + findFirstPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
-                            "\t\t</point1>\n" +
-                            "\t\t<point2>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + findSecondPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + findSecondPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
-                            "\t\t</point2>\n" +
-                            "\t\t<point3>\n" +
+                                    "\t\t</point>\n" +
+                                    "\t\t<point>\n" +
                             "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
-                                    "\t\t</point3>\n");
+                                    "\t\t</point>\n");
                 } else if (lxs > 28 && lys > 28) {
                     float num = ((float) lxs - 1) / 3;
                     int curves = 3;
@@ -180,7 +182,7 @@ public class Analyzer extends Thread {
                     float p0x = 0, p1x, p2x, p3x,
                             p0y = 0, p1y, p2y, p3y;
 
-                    for (int j = 0; j < pointsCount - 1; j = j + 3) {
+                    for (int j = 0; j < pointsCount - 1; j += 3) {
                         coef0 = (int) (j * coefficient);
                         coef1 = (int) ((j + 1) * coefficient);
                         coef2 = (int) ((j + 2) * coefficient);
@@ -199,26 +201,26 @@ public class Analyzer extends Thread {
                         p3y = ly.get(coef3);
 
                         if (j == 0) {
-                            writer.write(
-                                    "\t\t<point" + j + ">\n" +
+                            writer.write("\t\t<type>BezierPath</type>\n" +
+                                    "\t\t<point>\n" +
                                     "\t\t\t<xCoord>" + p0x + "</xCoord>\n" +
                                     "\t\t\t<yCoord>" + p0y + "</yCoord>\n" +
-                                    "\t\t</point" + j + ">\n");
+                                    "\t\t</point>\n");
                         }
 
                         writer.write(
-                                "\t\t<point" + (j + 1) + ">\n" +
+                                "\t\t<point>\n" +
                                         "\t\t\t<xCoord>" + findFirstPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
                                         "\t\t\t<yCoord>" + findFirstPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
-                                        "\t\t</point" + (j + 1) + ">\n" +
-                                        "\t\t<point" + (j + 2) + ">\n" +
+                                        "\t\t</point>\n" +
+                                        "\t\t<point>\n" +
                                         "\t\t\t<xCoord>" + findSecondPointBez3(p0x, p1x, p2x, p3x) + "</xCoord>\n" +
                                         "\t\t\t<yCoord>" + findSecondPointBez3(p0y, p1y, p2y, p3y) + "</yCoord>\n" +
-                                        "\t\t</point" + (j + 2) + ">\n" +
-                                        "\t\t<point" + (j + 3) + ">\n" +
+                                        "\t\t</point>\n" +
+                                        "\t\t<point>\n" +
                                         "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                                         "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
-                                        "\t\t</point" + (j + 3) + ">\n");
+                                        "\t\t</point>\n");
 
                         p0x = p3x;
                         p0y = p3y;
@@ -250,7 +252,7 @@ public class Analyzer extends Thread {
         return (-5 * p3 + 18 * p2 - 9 * p1 + 2 * p0) / 6;
     }
 
-    private float findPointBez2(int p0, int p1, int p2) {
+    private float findPointBez2(float p0, float p1, float p2) {
         return (float) (0.25 * p1 - p0 - p2);
     }
 

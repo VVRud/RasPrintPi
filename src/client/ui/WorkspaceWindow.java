@@ -93,6 +93,18 @@ public class WorkspaceWindow extends JFrame {
         intensityList.setEnabled(true);
     }
 
+    public static void setInactiveTrue() {
+        drawArea.setEnabled(false);
+        chooseFileButton.setEnabled(false);
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        saveFileButton.setEnabled(false);
+        clearButton.setEnabled(false);
+        speedList.setEnabled(false);
+        modeList.setEnabled(false);
+        intensityList.setEnabled(false);
+    }
+
     static JLabel getFileDir() {
         return fileDir;
     }
@@ -193,6 +205,8 @@ public class WorkspaceWindow extends JFrame {
         }
         SenderClient sender = new SenderClient(INTERRUPT);
         sender.start();
+
+        setInactiveFalse();
     }
 
     private void startPrinting() {
@@ -216,7 +230,10 @@ public class WorkspaceWindow extends JFrame {
         } else if (drawArea.isActive()) {
             analyzer.setMode(BEZ_MODE, true);
         }
+
         analyzer.start();
+
+        setInactiveTrue();
     }
 
     private void putOptions() {

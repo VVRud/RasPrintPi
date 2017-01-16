@@ -18,10 +18,11 @@ import java.util.HashMap;
  */
 public class ReceiverServer extends Thread {
 
-    private static final int INTERRUPT = 0;
-    private static final int TXT = 1;
-    private static final int XML = 2;
-    private static final int SHUTDOWN = 3;
+    public static final int INTERRUPT = 0;
+    public static final int TXT = 1;
+    public static final int XML = 2;
+    public static final int SHUTDOWN = 3;
+
     private static Printer printer;
     private int currentState = -1;
     private DataInputStream dataInput = Server.getDataInput();
@@ -39,8 +40,12 @@ public class ReceiverServer extends Thread {
                 if (currentState == TXT) {
                     inputOptions(objectInput);
                     inputFile(dataInput, "txt");
+                    printer = new Printer(currentState);
+                    printer.start();
                 } else if (currentState == XML) {
                     inputFile(dataInput, "xml");
+                    printer = new Printer(currentState);
+                    printer.start();
                 } else if (currentState == INTERRUPT) {
                     interruptPrinting();
                 }

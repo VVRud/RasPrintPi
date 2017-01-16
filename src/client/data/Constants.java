@@ -18,8 +18,7 @@ public class Constants {
     public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files",
             "xml", "jpg", "jpeg");
 
-    //TODO Set default ip and port
-    public static final String DEFAULT_IP = "localhost";
+    public static final String DEFAULT_IP = "192.168.0.29";
     public static final String DEFAULT_PORT = "6565";
 
     //Modes
@@ -35,7 +34,6 @@ public class Constants {
     public static final String RUNNING_SENDER_ERR = "ERROR! Starting sending failed! Write to VlValRudenko@i.ua.";
     public static final String CHOOSING_FILE_ERR = "You might have chosen file without extension." +
             "Choose the right file, please.";
-
 
     //Warnings
     public static final String WARN_TITLE = "WARNING!";

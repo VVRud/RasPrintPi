@@ -1,16 +1,17 @@
 package server.jgeometry;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * Created by vvrud on 29.11.16.
  *
  * @author VVRud
  */
-public class BezierPath {
-    private LinkedList<Point> points;
+public class BezierPath extends Geometry {
+    private ArrayList<Point> points;
 
-    public BezierPath(LinkedList<Point> list) throws RuntimeException {
+    public BezierPath(ArrayList<Point> list) throws RuntimeException {
+        super("BezierPath");
         if (list.size() > 3) this.points = list;
         else throw new RuntimeException("Less than 3 points are not available here!");
     }
@@ -23,4 +24,7 @@ public class BezierPath {
         return points.get(i);
     }
 
+    public int getPathLength() {
+        return points.size();
+    }
 }

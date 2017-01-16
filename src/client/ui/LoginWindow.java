@@ -32,10 +32,10 @@ public class LoginWindow extends JFrame {
         JTextField ipField = new JTextField(10);
         JTextField portField = new JTextField(5);
         JButton btnConnect = new JButton("CONNECT");
+        JButton btnOffline = new JButton("OFFLINE");
 
-        //TODO открыть корректировку ввода
-        createPanel(ipField, portField, btnConnect);
-        //addTextCheck(ipField, portField);
+        createPanel(ipField, portField, btnConnect, btnOffline);
+        addTextCheck(ipField, portField);
 
         loginWindow.setBorder(BorderFactory.createLineBorder(Color.red));
         getContentPane().add(loginWindow, BorderLayout.CENTER);
@@ -60,8 +60,6 @@ public class LoginWindow extends JFrame {
 
             //Try connect to socket
             if (ipPortSuccess) {
-                //TODO УБРАТЬ ЗАГЛУШКУ ПЕРЕХОДА
-                connectionSuccess = true;
                 try {
                     Client.setSocket(new Socket(ip, port));
                     connectionSuccess = true;
@@ -87,6 +85,12 @@ public class LoginWindow extends JFrame {
             //Set fields empty
             ipField.setText("");
             portField.setText("");
+        });
+
+        btnOffline.addActionListener(l -> {
+            ip = "OFFLINE MODE";
+            port = 0;
+            connectionSuccess = true;
         });
 
     }
@@ -133,28 +137,38 @@ public class LoginWindow extends JFrame {
         });
     }
 
-    private void createPanel(JTextField ipField, JTextField portField, JButton btnConnect) {
+    private void createPanel(JTextField ipField, JTextField portField, JButton btnConnect, JButton btnOffline) {
         //Add JLabel with text
         JLabel text = new JLabel("Enter server IP and PORT to connect");
         text.setFont(new Font("Arial", Font.BOLD, 14));
-        loginWindow.add(text, new GridBagConstraints(0, 0, 3, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        loginWindow.add(text, new GridBagConstraints(0, 0, 3, 1, 1, 0,
+                GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 1, 1));
 
         JLabel ipLabel = new JLabel("IP:");
         loginWindow.add(ipLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 0), 0, 0));
         loginWindow.add(ipField, new GridBagConstraints(1, 1, 2, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 5), 0, 0));
         ipField.setToolTipText("Default IP is: " + DEFAULT_IP);
 
         JLabel portLabel = new JLabel("PORT:");
         loginWindow.add(portLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 0), 0, 0));
         loginWindow.add(portField, new GridBagConstraints(1, 2, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 5), 0, 0));
         portField.setToolTipText("Default port is: " + DEFAULT_PORT);
 
-        loginWindow.add(btnConnect, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        loginWindow.add(btnConnect, new GridBagConstraints(2, 2, 1, 1, 0, 0,
+                GridBagConstraints.EAST, GridBagConstraints.BOTH,
+                new Insets(5, 5, 5, 5), 0, 0));
+
+        loginWindow.add(btnOffline, new GridBagConstraints(0, 3, 3, 1, 0, 0,
+                GridBagConstraints.EAST, GridBagConstraints.BOTH,
                 new Insets(5, 5, 5, 5), 0, 0));
 
         //Set correct sizes

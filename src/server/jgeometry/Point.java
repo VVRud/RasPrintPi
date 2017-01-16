@@ -5,20 +5,21 @@ package server.jgeometry;
  *
  * @author VVRud
  */
-public class Point {
-    private double x;
-    private double y;
+public class Point extends Geometry {
+    private float x;
+    private float y;
 
-    public Point(double x, double y) {
+    public Point(float x, float y) {
+        super("Point");
         this.x = x;
         this.y = y;
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 }

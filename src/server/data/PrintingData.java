@@ -1,8 +1,9 @@
 package server.data;
 
-import com.pi4j.io.gpio.*;
+import server.jgeometry.Geometry;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -13,23 +14,7 @@ import java.util.HashMap;
  */
 public class PrintingData {
 
-    private static final GpioController gpio = GpioFactory.getInstance();
-    //TODO set right GPIO pins
-    public static final GpioPinDigitalOutput[] PINS_X = {
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
-    public static final GpioPinDigitalOutput[] PINS_Y = {
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
-    public static final GpioPinDigitalOutput[] PINS_Z = {
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
+    private static ArrayList<Geometry> geometryList;
     private static File file;
     private static HashMap<String, String> options;
 
@@ -47,5 +32,13 @@ public class PrintingData {
 
     public static void setOptions(HashMap<String, String> options) {
         PrintingData.options = options;
+    }
+
+    public static ArrayList<Geometry> getGeometryList() {
+        return geometryList;
+    }
+
+    public static void setGeometryList(ArrayList<Geometry> geometryList) {
+        PrintingData.geometryList = geometryList;
     }
 }

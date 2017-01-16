@@ -1,22 +1,25 @@
 package server.jgeometry;
 
+import java.util.ArrayList;
+
 /**
  * Created by vvrud on 29.11.16.
  *
  * @author VVRud
  */
-public class BezierCurve3 {
+public class BezierCurve3 extends Geometry {
 
     private Point pStart;
     private Point p1;
     private Point p2;
     private Point pFinish;
 
-    public BezierCurve3(Point pStart, Point p1, Point p2, Point pFinish) {
-        this.pStart = pStart;
-        this.p1 = p1;
-        this.p2 = p2;
-        this.pFinish = pFinish;
+    public BezierCurve3(ArrayList<Point> pointList) {
+        super("BezierCurve3");
+        this.pStart = pointList.get(0);
+        this.p1 = pointList.get(1);
+        this.p2 = pointList.get(2);
+        this.pFinish = pointList.get(3);
     }
 
     public Point getpStart() {
