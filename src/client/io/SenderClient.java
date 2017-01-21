@@ -2,6 +2,7 @@ package client.io;
 
 import client.Client;
 import client.data.PrintingData;
+import client.ui.WorkspaceWindow;
 
 import java.io.*;
 
@@ -35,6 +36,7 @@ public class SenderClient extends Thread {
         if (printingInterrupted) {
             try {
                 dataOutput.writeInt(INTERRUPT);
+                WorkspaceWindow.setInactiveFalse();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -43,6 +45,7 @@ public class SenderClient extends Thread {
                 dataOutput.writeInt(TXT);
                 sendOptions(objectOutput);
                 sendFile(dataOutput, TXT);
+                WorkspaceWindow.setInactiveTrue();
             } catch (IOException e) {
                 System.out.println("Failed sending file or options!");
                 e.printStackTrace();
@@ -51,6 +54,7 @@ public class SenderClient extends Thread {
             try {
                 dataOutput.writeInt(XML);
                 sendFile(dataOutput, XML);
+                WorkspaceWindow.setInactiveTrue();
             } catch (IOException e) {
                 System.out.println("Failed sending xml");
                 e.printStackTrace();

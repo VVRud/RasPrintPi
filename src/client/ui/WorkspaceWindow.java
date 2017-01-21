@@ -71,13 +71,15 @@ public class WorkspaceWindow extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        if (LoginWindow.getIp().equals("OFFLINE MODE")) startButton.setEnabled(false);
     }
 
     public static void showWarningMessage(String message) {
         JOptionPane.showMessageDialog(workPanel, message, WARN_TITLE, JOptionPane.WARNING_MESSAGE);
     }
 
-    public static void showErrorMessage(String err) {
+    private static void showErrorMessage(String err) {
         JOptionPane.showMessageDialog(workPanel, err, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 
@@ -125,6 +127,7 @@ public class WorkspaceWindow extends JFrame {
             xml = PrintingData.getXmlFileCreated();
         }
         if (drawArea.isImageDrawn()) {
+            drawArea.graphicsToImage();
             analyzer.setMode(JPG_MODE, false);
             analyzer.run();
             txt = PrintingData.getTxtFileCreated();
@@ -232,8 +235,7 @@ public class WorkspaceWindow extends JFrame {
         }
 
         analyzer.start();
-
-        setInactiveTrue();
+        drawArea.setAnalyzer(new Analyzer());
     }
 
     private void putOptions() {

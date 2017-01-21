@@ -161,6 +161,10 @@ class DrawArea extends JComponent {
         return analyzer;
     }
 
+    void setAnalyzer(Analyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
     boolean isActive() {
         return active;
     }

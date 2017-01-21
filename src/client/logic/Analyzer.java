@@ -6,6 +6,11 @@ import client.io.ReceiverClient;
 import client.io.SenderClient;
 import client.ui.WorkspaceWindow;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -48,7 +53,12 @@ public class Analyzer extends Thread {
                 System.out.println("Failed writing to file!");
             }
         } else if (mode == JPG_MODE) {
-            analyzePicture();
+            try {
+                analyzePicture();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Failed creating txt!");
+            }
             if (send) runIO(JPG_MODE);
         } else {
             WorkspaceWindow.showWarningMessage(UNKNOWN_MODE);
@@ -239,9 +249,35 @@ public class Analyzer extends Thread {
         }
     }
 
-    private void analyzePicture() {
-        System.out.println("TXT file created!");
-        //TODO Set PrintingData.setTxtFileCreated(txtFile);
+    private void analyzePicture() throws IOException {
+        File xmlFile = File.createTempFile("rppi_txt_tmp_", ".txt");
+        FileWriter fw = new FileWriter(xmlFile);
+        BufferedWriter writer = new BufferedWriter(fw);
+
+        File image = PrintingData.getJpgFileCreated();
+        BufferedImage in = ImageIO.read(image);
+        Raster raster = in.getRaster();
+        ColorModel model = in.getColorModel();
+
+        for (int i = 0; i < in.getHeight(); i++) {
+            for (int j = 0; j < in.getWidth(); j++) {
+                Object data = raster.getDataElements(j, i, null);
+                int argb = model.getRGB(data);
+                Color color = new Color(argb, true);
+                int myGrey = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+
+                //TODO CREATE CONDITIONS
+                if (myGrey > 0) {
+                    writer.write(0);
+                } else if (myGrey > 50) {
+                    writer.write(1);
+                } else if (myGrey > 100) {
+                    writer.write(2);
+                } else if (myGrey > 150) {
+                    writer.write(3);
+                }
+            }
+        }
     }
 
     private float findFirstPointBez3(float p0, float p1, float p2, float p3) {
