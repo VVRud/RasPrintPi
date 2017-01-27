@@ -178,7 +178,7 @@ public class WorkspaceWindow extends JFrame {
                     case "jpeg":
                         try {
                             BufferedImage in = ImageIO.read(file);
-                            drawArea.drawImage(in);
+                            drawArea.drawChosenImage(in);
                             PrintingData.setJpgFileChosen(file);
                         } catch (IOException e) {
                             System.out.println("Failed reading image");

@@ -23,7 +23,7 @@ public class Analyzer {
     private static int columnCount = 0;
 
     private static ArrayList<Geometry> geometryList = new ArrayList<>();
-    private static ArrayList<server.jgeometry.Point> pointList = new ArrayList<>();
+    private static ArrayList<Point> pointList = new ArrayList<>();
 
     public static int getColumnCount() {
         return columnCount;

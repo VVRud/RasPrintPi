@@ -1,6 +1,7 @@
 package server;
 
 import server.io.ReceiverServer;
+import server.io.SenderServer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -16,16 +17,22 @@ import java.net.Socket;
 
 public class Server {
 
+    private static final int PORT = 6565;
     private static DataInputStream dataInput;
     private static DataOutputStream dataOutput;
     private static ObjectInputStream objectInput;
     private static ObjectOutputStream objectOutput;
+    private static Printer printer;
+    private static SenderServer sender;
+    private static ReceiverServer receiver;
 
     public static void main(String[] args) {
-        int port = 6565;
+        start();
+    }
 
+    public static void start() {
         try {
-            ServerSocket ss = new ServerSocket(port);
+            ServerSocket ss = new ServerSocket(PORT);
             System.out.println("Waiting for a client...");
             Socket serverSocket = ss.accept();
             System.out.println("Have got a client!\n");
@@ -34,12 +41,32 @@ public class Server {
             objectInput = new ObjectInputStream(dataInput);
             objectOutput = new ObjectOutputStream(new DataOutputStream(serverSocket.getOutputStream()));
 
-            new ReceiverServer().start();
+            receiver = new ReceiverServer();
+            receiver.start();
             System.out.println("Getter started!");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void shutdown() {
+        if (receiver != null) {
+            receiver.interrupt();
+            receiver = null;
+        }
+        if (sender != null) {
+            sender.interrupt();
+            sender = null;
+        }
+        if (printer != null) {
+            printer.interrupt();
+            printer = null;
+        }
+
+        dataInput = null;
+        dataOutput = null;
+        objectInput = null;
+        objectOutput = null;
     }
 
     public static DataInputStream getDataInput() {
@@ -58,4 +85,11 @@ public class Server {
         return objectOutput;
     }
 
+    public static void setPrinter(Printer printer) {
+        Server.printer = printer;
+    }
+
+    public void setSender(SenderServer sender) {
+        Server.sender = sender;
+    }
 }

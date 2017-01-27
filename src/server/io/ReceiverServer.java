@@ -42,20 +42,28 @@ public class ReceiverServer extends Thread {
                     inputFile(dataInput, "txt");
                     printer = new Printer(currentState);
                     printer.start();
+                    Server.setPrinter(printer);
                 } else if (currentState == XML) {
                     inputFile(dataInput, "xml");
                     printer = new Printer(currentState);
                     printer.start();
+                    Server.setPrinter(printer);
                 } else if (currentState == INTERRUPT) {
                     interruptPrinting();
                 }
             } catch (SocketException e) {
                 currentState = SHUTDOWN;
+                System.out.println("Client is not connected now!");
                 e.printStackTrace();
             } catch (IOException e) {
+                currentState = SHUTDOWN;
                 System.out.println("Reading failed");
                 e.printStackTrace();
             }
+        }
+        if (currentState == SHUTDOWN) {
+            Server.shutdown();
+            Server.start();
         }
     }
 

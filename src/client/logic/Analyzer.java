@@ -267,16 +267,19 @@ public class Analyzer extends Thread {
                 int myGrey = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
 
                 //TODO CREATE CONDITIONS
-                if (myGrey > 0) {
+                if (myGrey > 0 && myGrey < 51) {
                     writer.write(0);
-                } else if (myGrey > 50) {
+                } else if (myGrey > 50 && myGrey < 101) {
                     writer.write(1);
-                } else if (myGrey > 100) {
+                } else if (myGrey > 100 && myGrey < 151) {
                     writer.write(2);
-                } else if (myGrey > 150) {
+                } else if (myGrey > 150 && myGrey < 201) {
                     writer.write(3);
+                } else if (myGrey > 200 && myGrey < 256) {
+                    writer.write(4);
                 }
             }
+            writer.write(8);
         }
     }
 

@@ -6,6 +6,11 @@ package server.io;
  * @author VVRud
  *         This class provides sending messages to client from server.
  */
-class SenderServer {
+public class SenderServer extends Thread {
+
+    @Override
+    public void run() {
+
+    }
 
 }
