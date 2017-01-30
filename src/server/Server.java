@@ -52,8 +52,8 @@ public class Server {
             receiver = new ReceiverServer(dataInput, objectInput);
             receiver.start();
 
-            sender = new SenderServer(dataOutput);
-            sender.start();
+//            sender = new SenderServer(dataOutput);
+//            sender.start();
 
             System.out.println("Getter started!");
         } catch (IOException e) {

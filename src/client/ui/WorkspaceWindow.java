@@ -42,8 +42,8 @@ public class WorkspaceWindow extends JFrame {
     private static JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private static JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
 
-    public WorkspaceWindow() {
-        super(TITLE + " | Opened on IP: " + LoginWindow.getIp() + ":" + LoginWindow.getPort());
+    WorkspaceWindow(String ip, int port) {
+        super(TITLE + " | Opened on IP: " + ip + ":" + port);
 
         ActionListener actionListener = e -> {
             if (e.getSource() == startButton) {

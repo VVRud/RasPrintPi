@@ -3,9 +3,7 @@ package client;
 import client.io.ReceiverClient;
 import client.io.SenderClient;
 import client.ui.LoginWindow;
-import client.ui.WorkspaceWindow;
 
-import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.ObjectInputStream;
@@ -32,20 +30,17 @@ public class Client {
 
 
     public static void main(String[] args) {
-        JFrame loginWindow = new LoginWindow();
+        new LoginWindow();
+        Thread.yield();
 
-        while (!LoginWindow.isConnectionSuccess()) {
-            Thread.yield();
-        }
-
-        loginWindow.setVisible(false);
-        loginWindow = null;
-
-        new WorkspaceWindow();
-    }
-
-    public static Socket getSocket() {
-        return socket;
+//        while (!LoginWindow.isConnectionSuccess()) {
+//            Thread.yield();
+//        }
+//
+//        loginWindow.setVisible(false);
+//        loginWindow = null;
+//
+//        new WorkspaceWindow();
     }
 
     public static void setSocket(Socket socket) {

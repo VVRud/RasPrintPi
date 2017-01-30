@@ -8,7 +8,10 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -23,7 +26,6 @@ public class LoginWindow extends JFrame {
 
     private static String ip;
     private static int port;
-    private static boolean connectionSuccess = false;
     private final JPanel loginWindow = new JPanel(new GridBagLayout());
 
     public LoginWindow() {
@@ -61,24 +63,23 @@ public class LoginWindow extends JFrame {
             //Try connect to socket
             if (ipPortSuccess) {
                 try {
-                    Client.setSocket(new Socket(ip, port));
-                    connectionSuccess = true;
+                    Socket socket = new Socket(ip, port);
+                    Client.setSocket(socket);
 
-                    Socket socket = Client.getSocket();
                     DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream());
+                    DataInputStream dataInput = new DataInputStream(socket.getInputStream());
 
                     Client.setDataOutput(dataOutput);
+                    Client.setDataInput(dataInput);
                     Client.setObjectOutput(new ObjectOutputStream(dataOutput));
-                    Client.setObjectInput(new ObjectInputStream(new DataInputStream(socket.getInputStream())));
+                    new WorkspaceWindow(ip, port);
+                    dispose();
                 } catch (UnknownHostException hostErr) {
                     JOptionPane.showMessageDialog(loginWindow, IP_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
-                    connectionSuccess = false;
                 } catch (IOException ioErr) {
                     JOptionPane.showMessageDialog(loginWindow, PORT_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
-                    connectionSuccess = false;
                 } catch (IllegalArgumentException ilArgErr) {
                     JOptionPane.showMessageDialog(loginWindow, PORT_ILLEGAL_ARG_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
-                    connectionSuccess = false;
                 }
             }
 
@@ -90,22 +91,11 @@ public class LoginWindow extends JFrame {
         btnOffline.addActionListener(l -> {
             ip = "OFFLINE MODE";
             port = 0;
-            connectionSuccess = true;
+            new WorkspaceWindow(ip, port);
+            dispose();
         });
 
         setVisible(true);
-    }
-
-    public static boolean isConnectionSuccess() {
-        return connectionSuccess;
-    }
-
-    static String getIp() {
-        return ip;
-    }
-
-    static int getPort() {
-        return port;
     }
 
     private void addTextCheck(JTextField ipField, JTextField portField) {
