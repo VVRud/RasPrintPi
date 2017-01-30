@@ -93,6 +93,7 @@ public class LoginWindow extends JFrame {
             connectionSuccess = true;
         });
 
+        setVisible(true);
     }
 
     public static boolean isConnectionSuccess() {

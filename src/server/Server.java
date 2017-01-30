@@ -27,14 +27,20 @@ public class Server {
     private static Printer printer;
     private static SenderServer sender;
     private static ReceiverServer receiver;
+    private static ServerSocket ss = null;
 
     public static void main(String[] args) {
-        start();
+        try {
+            ss = new ServerSocket(PORT);
+        } catch (IOException e) {
+            System.out.println("Failed Creating ServerSocket!");
+            e.printStackTrace();
+        }
+        start(ss);
     }
 
-    public static void start() {
+    public static void start(ServerSocket ss) {
         try {
-            ServerSocket ss = new ServerSocket(PORT);
             System.out.println("Waiting for a client...");
             Socket serverSocket = ss.accept();
             System.out.println("Have got a client!\n");
@@ -92,5 +98,9 @@ public class Server {
 
     public static SenderServer getSender() {
         return sender;
+    }
+
+    public static ServerSocket getServerSocket() {
+        return ss;
     }
 }

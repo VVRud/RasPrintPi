@@ -33,7 +33,6 @@ public class Client {
 
     public static void main(String[] args) {
         JFrame loginWindow = new LoginWindow();
-        loginWindow.setVisible(true);
 
         while (!LoginWindow.isConnectionSuccess()) {
             Thread.yield();
@@ -42,8 +41,7 @@ public class Client {
         loginWindow.setVisible(false);
         loginWindow = null;
 
-        JFrame mainWindow = new WorkspaceWindow();
-        mainWindow.setVisible(true);
+        new WorkspaceWindow();
     }
 
     public static Socket getSocket() {

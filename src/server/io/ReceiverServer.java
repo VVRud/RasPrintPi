@@ -64,7 +64,7 @@ public class ReceiverServer extends Thread {
         }
         if (currentState == SHUTDOWN) {
             Server.shutdown();
-            Server.start();
+            Server.start(Server.getServerSocket());
         }
     }
 

@@ -72,7 +72,8 @@ public class WorkspaceWindow extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        if (LoginWindow.getIp().equals("OFFLINE MODE")) startButton.setEnabled(false);
+        //if (LoginWindow.getIp().equals("OFFLINE MODE")) startButton.setEnabled(false);
+        setVisible(true);
     }
 
     public static void showWarningMessage(String message) {
