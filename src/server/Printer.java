@@ -24,8 +24,8 @@ public class Printer extends Thread {
     private static final int MOTOR_Y = 1;
 
     private static final GpioPinDigitalOutput[] PINS_X = {
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28, PinState.LOW),
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_29, PinState.LOW)};
 

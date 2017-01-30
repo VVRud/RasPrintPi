@@ -38,7 +38,7 @@ public class PrintingData {
         return geometryList;
     }
 
-    public static void setGeometryList(ArrayList<Geometry> geometryList) {
+    static void setGeometryList(ArrayList<Geometry> geometryList) {
         PrintingData.geometryList = geometryList;
     }
 }
