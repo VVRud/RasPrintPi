@@ -45,9 +45,9 @@ public class Printer extends Thread {
     private static GpioStepperMotorComponent motorY = new GpioStepperMotorComponent(PINS_Y);
     private static GpioStepperMotorComponent motorZ = new GpioStepperMotorComponent(PINS_Z);
     private static GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
+    boolean zUp = true;
     private MotorController controllerX;
     private MotorController controllerY;
-
     private int state;
     private Point currentPoint = new Point(0, 0);
 
@@ -113,10 +113,12 @@ public class Printer extends Thread {
     }
 
     public void stopPrinting() {
-        interrupt();
         System.out.println("PRINTING INTERRUPTED!");
-        motorZUp();
+        if (!zUp) {
+            motorZUp();
+        }
         motorsToHomeSpot();
+        interrupt();
     }
 
     private void printXml() {
@@ -182,6 +184,7 @@ public class Printer extends Thread {
         }
         motorsToHomeSpot();
         pwm.setPwm(0);
+        Server.getSender().sendFinishing();
     }
 
     private void printTxt() {
@@ -231,10 +234,12 @@ public class Printer extends Thread {
 
     private void motorZUp() {
         motorZ.step(510);
+        zUp = true;
     }
 
     private void motorZDown() {
         motorZ.step(-510);
+        zUp = false;
     }
 
     private void motorsMove(Point point) {

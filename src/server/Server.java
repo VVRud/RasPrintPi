@@ -3,7 +3,10 @@ package server;
 import server.io.ReceiverServer;
 import server.io.SenderServer;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,7 +24,6 @@ public class Server {
     private static DataInputStream dataInput;
     private static DataOutputStream dataOutput;
     private static ObjectInputStream objectInput;
-    private static ObjectOutputStream objectOutput;
     private static Printer printer;
     private static SenderServer sender;
     private static ReceiverServer receiver;
@@ -38,11 +40,15 @@ public class Server {
             System.out.println("Have got a client!\n");
 
             dataInput = new DataInputStream(serverSocket.getInputStream());
+            dataOutput = new DataOutputStream(serverSocket.getOutputStream());
             objectInput = new ObjectInputStream(dataInput);
-            objectOutput = new ObjectOutputStream(new DataOutputStream(serverSocket.getOutputStream()));
 
-            receiver = new ReceiverServer();
+            receiver = new ReceiverServer(dataInput, objectInput);
             receiver.start();
+
+            sender = new SenderServer(dataOutput);
+            sender.start();
+
             System.out.println("Getter started!");
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,14 +72,13 @@ public class Server {
         dataInput = null;
         dataOutput = null;
         objectInput = null;
-        objectOutput = null;
     }
 
     public static DataInputStream getDataInput() {
         return dataInput;
     }
 
-    static DataOutputStream getDataOutput() {
+    public static DataOutputStream getDataOutput() {
         return dataOutput;
     }
 
@@ -81,15 +86,11 @@ public class Server {
         return objectInput;
     }
 
-    public static ObjectOutputStream getObjectOutput() {
-        return objectOutput;
-    }
-
     public static void setPrinter(Printer printer) {
         Server.printer = printer;
     }
 
-    public void setSender(SenderServer sender) {
-        Server.sender = sender;
+    public static SenderServer getSender() {
+        return sender;
     }
 }

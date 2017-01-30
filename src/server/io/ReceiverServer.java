@@ -18,18 +18,19 @@ import java.util.HashMap;
  */
 public class ReceiverServer extends Thread {
 
-    public static final int INTERRUPT = 0;
     public static final int TXT = 1;
     public static final int XML = 2;
-    public static final int SHUTDOWN = 3;
+    private static final int INTERRUPT = 0;
+    private static final int SHUTDOWN = 3;
 
     private static Printer printer;
     private int currentState = -1;
-    private DataInputStream dataInput = Server.getDataInput();
-    private ObjectInputStream objectInput = Server.getObjectInput();
+    private DataInputStream dataInput;
+    private ObjectInputStream objectInput;
 
-    public static Printer getPrinter() {
-        return printer;
+    public ReceiverServer(DataInputStream dataInput, ObjectInputStream objectInput) {
+        this.dataInput = dataInput;
+        this.objectInput = objectInput;
     }
 
     @Override
