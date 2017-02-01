@@ -22,7 +22,6 @@ public class Analyzer {
     private static int rowCount = 0;
     private static int columnCount = 0;
 
-    private static ArrayList<Geometry> geometryList = new ArrayList<>();
     private static ArrayList<Point> pointList = new ArrayList<>();
 
     public static int getColumnCount() {
@@ -78,6 +77,7 @@ public class Analyzer {
     }
 
     public static void analyzeXmlFile() {
+        ArrayList<Geometry> geometryList = new ArrayList<>();
         File file = PrintingData.getFile();
 
         if (file != null) {
@@ -123,16 +123,14 @@ public class Analyzer {
                                 String speed = ((Element) nNode).getElementsByTagName("speed")
                                         .item(0)
                                         .getTextContent();
-                                System.out.println("Options: " + mode + " " + speed + " " + intensity);
+                                //TODO Save settings
                                 break;
                         }
-                        System.out.println("-------------------------------------------");
-                        System.out.println(geometryList);
-                        System.out.println(elementType + pointList);
-                        System.out.println("-------------------------------------------");
                     }
                 }
                 PrintingData.setGeometryList(new ArrayList<>(geometryList));
+                PrintingData.setFile(null);
+                geometryList.clear();
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -140,7 +138,7 @@ public class Analyzer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else System.out.println("Something went wrong!");
+        } else System.out.println("File is null!");
     }
 
     private static void createCurve(Element eElement) {

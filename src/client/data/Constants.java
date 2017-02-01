@@ -14,11 +14,11 @@ import java.awt.*;
 public class Constants {
 
     public static final String TITLE = "RasPrintPi";
-    public static final Dimension CANVAS_SIZE = new Dimension(420, 420);
+    public static final Dimension DRAWING_AREA_SIZE = new Dimension(320, 320);
     public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files",
             "xml", "jpg", "jpeg");
 
-    public static final String DEFAULT_IP = "192.168.0.29";
+    public static final String DEFAULT_IP = "10.10.100.29";
     public static final String DEFAULT_PORT = "6565";
 
     //Modes
@@ -31,7 +31,6 @@ public class Constants {
     public static final String PORT_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_NUM_ERR = "ERROR! Can't connect to server. Check your PORT, please.";
     public static final String PORT_ILLEGAL_ARG_ERR = "ERROR! PORT number is out of range. Check the PORT, please.";
-    public static final String RUNNING_SENDER_ERR = "ERROR! Starting sending failed! Write to VlValRudenko@i.ua.";
     public static final String CHOOSING_FILE_ERR = "You might have chosen file without extension." +
             "Choose the right file, please.";
 
@@ -40,11 +39,16 @@ public class Constants {
     public static final String EMPTY_DRAWING_LIST = "Printing is impossible now, you did'nt draw anything.";
     public static final String UNKNOWN_MODE = "Unknown mode! Please, try again.";
 
+    //Messages
+    public static final String MESSAGE_TITLE = "PROGRAM MESSAGE";
+    public static final String FINISHED_PRINTING_MSG = "Printer finished printing.";
+
     //Instructions
     public static final int INTERRUPT = 0;
     public static final int TXT = 1;
     public static final int XML = 2;
     public static final int SHUTDOWN = 3;
+    public static final int PRINTING_FINISHED = 9;
 
     //Data
     public static final String[] SPEED_DATA = {

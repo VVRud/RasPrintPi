@@ -52,10 +52,7 @@ public class Server {
             receiver = new ReceiverServer(dataInput, objectInput);
             receiver.start();
 
-//            sender = new SenderServer(dataOutput);
-//            sender.start();
-
-            System.out.println("Getter started!");
+            sender = new SenderServer(dataOutput);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,10 +63,7 @@ public class Server {
             receiver.interrupt();
             receiver = null;
         }
-        if (sender != null) {
-            sender.interrupt();
-            sender = null;
-        }
+
         if (printer != null) {
             printer.interrupt();
             printer = null;
@@ -78,18 +72,9 @@ public class Server {
         dataInput = null;
         dataOutput = null;
         objectInput = null;
-    }
+        sender = null;
 
-    public static DataInputStream getDataInput() {
-        return dataInput;
-    }
-
-    public static DataOutputStream getDataOutput() {
-        return dataOutput;
-    }
-
-    public static ObjectInputStream getObjectInput() {
-        return objectInput;
+        System.gc();
     }
 
     public static void setPrinter(Printer printer) {

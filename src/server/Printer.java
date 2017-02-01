@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.*;
 import server.data.Analyzer;
 import server.data.PrintingData;
 import server.io.ReceiverServer;
+import server.io.SenderServer;
 import server.jgeometry.*;
 
 import java.util.ArrayList;
@@ -24,10 +25,10 @@ public class Printer extends Thread {
     private static final int MOTOR_Y = 1;
 
     private static final GpioPinDigitalOutput[] PINS_X = {
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28, PinState.LOW),
-            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_29, PinState.LOW)};
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, PinState.LOW),
+            gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, PinState.LOW)};
 
     private static final GpioPinDigitalOutput[] PINS_Y = {
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, PinState.LOW),
@@ -45,11 +46,12 @@ public class Printer extends Thread {
     private static GpioStepperMotorComponent motorY = new GpioStepperMotorComponent(PINS_Y);
     private static GpioStepperMotorComponent motorZ = new GpioStepperMotorComponent(PINS_Z);
     private static GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
-    boolean zUp = true;
+    private boolean zUp = true;
     private MotorController controllerX;
     private MotorController controllerY;
     private int state;
     private Point currentPoint = new Point(0, 0);
+    private SenderServer sender = Server.getSender();
 
     public Printer(int currentState) {
         this.state = currentState;
@@ -57,6 +59,7 @@ public class Printer extends Thread {
 
     @Override
     public void run() {
+
         System.out.println("Printer started!");
         setMotorsDefaults();
         setPwmDefaults();
@@ -184,7 +187,7 @@ public class Printer extends Thread {
         }
         motorsToHomeSpot();
         pwm.setPwm(0);
-        Server.getSender().sendFinishing();
+        sender.sendFinishing();
     }
 
     private void printTxt() {

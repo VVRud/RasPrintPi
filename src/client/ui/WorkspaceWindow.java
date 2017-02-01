@@ -112,6 +112,10 @@ public class WorkspaceWindow extends JFrame {
         return fileDir;
     }
 
+    public static void showFinishingMessage() {
+        JOptionPane.showMessageDialog(workPanel, FINISHED_PRINTING_MSG, MESSAGE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void saveFile() {
         putOptions();
 
@@ -254,7 +258,7 @@ public class WorkspaceWindow extends JFrame {
 
     private void drawAreaCreate() {
         drawArea = new DrawArea();
-        drawArea.setPreferredSize(CANVAS_SIZE);
+        drawArea.setPreferredSize(DRAWING_AREA_SIZE);
         drawArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 12,
                 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,

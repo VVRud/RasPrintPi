@@ -49,15 +49,15 @@ public class Analyzer extends Thread {
                 analyzeCurve();
                 if (send) runIO(BEZ_MODE);
             } catch (IOException e) {
-                e.printStackTrace();
                 System.out.println("Failed writing to file!");
+                e.printStackTrace();
             }
         } else if (mode == JPG_MODE) {
             try {
                 analyzePicture();
             } catch (IOException e) {
-                e.printStackTrace();
                 System.out.println("Failed creating txt!");
+                e.printStackTrace();
             }
             if (send) runIO(JPG_MODE);
         } else {
@@ -266,7 +266,6 @@ public class Analyzer extends Thread {
                 Color color = new Color(argb, true);
                 int myGrey = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
 
-                //TODO CREATE CONDITIONS
                 if (myGrey > 0 && myGrey < 51) {
                     writer.write(0);
                 } else if (myGrey > 50 && myGrey < 101) {

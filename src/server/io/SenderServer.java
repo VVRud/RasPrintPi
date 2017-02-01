@@ -9,9 +9,9 @@ import java.io.IOException;
  * @author VVRud
  *         This class provides sending messages to client from server.
  */
-public class SenderServer extends Thread {
+public class SenderServer {
 
-    private static final int FINISHED_PRINTING = 9;
+    private static final int FINISH_PRINTING = 9;
 
     private DataOutputStream dataOut;
 
@@ -21,16 +21,10 @@ public class SenderServer extends Thread {
 
     public void sendFinishing() {
         try {
-            dataOut.writeInt(FINISHED_PRINTING);
+            dataOut.writeInt(FINISH_PRINTING);
         } catch (IOException e) {
-            e.printStackTrace();
             System.out.println("Problems with sending printing finished.");
+            e.printStackTrace();
         }
     }
-
-    @Override
-    public void run() {
-        System.out.println("Sender was started!");
-    }
-
 }

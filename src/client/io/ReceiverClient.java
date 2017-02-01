@@ -1,9 +1,13 @@
 package client.io;
 
 import client.Client;
-import client.data.PrintingData;
+import client.ui.WorkspaceWindow;
 
-import java.io.ObjectInputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+
+import static client.data.Constants.PRINTING_FINISHED;
 
 /**
  * Created by vvrud on 14.09.16.
@@ -15,10 +19,25 @@ public class ReceiverClient extends Thread {
 
     @Override
     public void run() {
-        ObjectInputStream objectInput = Client.getObjectInput();
+        DataInputStream dataInput = Client.getDataInput();
+        boolean disconnected = false;
 
-        while (!PrintingData.isPrintingInterrupted()) {
-            
+        while (!disconnected) {
+            int state = 0;
+            try {
+                state = dataInput.readInt();
+            } catch (EOFException eex) {
+                System.out.println("Server disconnected");
+                eex.printStackTrace();
+                disconnected = true;
+            } catch (IOException e) {
+                System.out.println("Failed reading state!");
+                e.printStackTrace();
+            }
+            if (state == PRINTING_FINISHED) {
+                WorkspaceWindow.setInactiveFalse();
+                WorkspaceWindow.showFinishingMessage();
+            }
         }
     }
 }
