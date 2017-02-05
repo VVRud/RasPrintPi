@@ -14,7 +14,7 @@ import java.awt.*;
 public class Constants {
 
     public static final String TITLE = "RasPrintPi";
-    public static final Dimension DRAWING_AREA_SIZE = new Dimension(320, 320);
+    public static final Dimension DRAWING_AREA_SIZE = new Dimension(310, 300);
     public static final FileFilter FILTER = new FileNameExtensionFilter("JPEG or XML files",
             "xml", "jpg", "jpeg");
 

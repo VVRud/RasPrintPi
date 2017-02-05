@@ -51,7 +51,8 @@ public class Printer extends Thread {
     private MotorController controllerY;
     private int state;
     private Point currentPoint = new Point(0, 0);
-    private SenderServer sender = Server.getSender();
+    private SenderServer sender;
+    private boolean printingStopped = false;
 
     public Printer(int currentState) {
         this.state = currentState;
@@ -59,6 +60,7 @@ public class Printer extends Thread {
 
     @Override
     public void run() {
+        sender = Server.getSender();
 
         System.out.println("Printer started!");
         setMotorsDefaults();
@@ -116,10 +118,15 @@ public class Printer extends Thread {
     }
 
     public void stopPrinting() {
+        printingStopped = true;
+    }
+
+    private void stopAll() {
         System.out.println("PRINTING INTERRUPTED!");
         if (!zUp) {
             motorZUp();
         }
+        pwm.setPwm(1000);
         motorsToHomeSpot();
         interrupt();
     }
@@ -132,15 +139,26 @@ public class Printer extends Thread {
         for (Geometry draw : list) {
             String type = draw.getType();
 
-            if (type.equals("Point")) {
+            if (printingStopped) {
+                stopAll();
+                return;
+            } else if (type.equals("Point")) {
                 Point p = (Point) draw;
                 motorsMove(p);
                 currentPoint = p;
+                if (printingStopped) {
+                    stopAll();
+                    return;
+                }
                 motorZDown();
                 motorZUp();
             } else if (type.equals("Line")) {
                 Line l = (Line) draw;
                 motorsMove(l.getPointStart());
+                if (printingStopped) {
+                    stopAll();
+                    return;
+                }
                 motorZDown();
                 motorsMove(l.getPointEnd());
                 motorZUp();
@@ -149,6 +167,10 @@ public class Printer extends Thread {
                 motorsMove(bc2.getpStart());
                 motorZDown();
                 for (float i = 0; i <= 1; i += 0.01f) {
+                    if (printingStopped) {
+                        stopAll();
+                        return;
+                    }
                     Point p = calculatePoint2(i, bc2.getpStart(), bc2.getP1(), bc2.getpFinish());
                     motorsMove(p);
                 }
@@ -158,6 +180,10 @@ public class Printer extends Thread {
                 motorsMove(bc3.getpStart());
                 motorZDown();
                 for (float i = 0; i <= 1; i += 0.01f) {
+                    if (printingStopped) {
+                        stopAll();
+                        return;
+                    }
                     Point p = calculatePoint3(i, bc3.getpStart(), bc3.getP1(), bc3.getP2(), bc3.getpFinish());
                     motorsMove(p);
                 }
@@ -177,6 +203,10 @@ public class Printer extends Thread {
                     p3 = path.getPoint(j + 3);
 
                     for (float i = 0; i <= 1; i += 0.01f) {
+                        if (printingStopped) {
+                            stopAll();
+                            return;
+                        }
                         Point p = calculatePoint3(i, p0, p1, p2, p3);
                         motorsMove(p);
                     }
@@ -186,7 +216,7 @@ public class Printer extends Thread {
             }
         }
         motorsToHomeSpot();
-        pwm.setPwm(0);
+        pwm.setPwm(1000);
         sender.sendFinishing();
     }
 
@@ -232,7 +262,7 @@ public class Printer extends Thread {
         com.pi4j.wiringpi.Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
         com.pi4j.wiringpi.Gpio.pwmSetRange(1000);
         com.pi4j.wiringpi.Gpio.pwmSetClock(500);
-        pwm.setPwm(1000);
+        pwm.setPwm(0);
     }
 
     private void motorZUp() {
