@@ -72,7 +72,7 @@ public class LoginWindow extends JFrame {
                     Client.setDataOutput(dataOutput);
                     Client.setDataInput(dataInput);
                     Client.setObjectOutput(new ObjectOutputStream(dataOutput));
-                    new WorkspaceWindow(ip, port);
+                    new WorkspaceWindow(ip, port, true);
                     dispose();
                 } catch (UnknownHostException hostErr) {
                     JOptionPane.showMessageDialog(loginWindow, IP_ERR, ERR_TITLE, JOptionPane.ERROR_MESSAGE);
@@ -91,7 +91,7 @@ public class LoginWindow extends JFrame {
         btnOffline.addActionListener(l -> {
             ip = "OFFLINE MODE";
             port = 0;
-            new WorkspaceWindow(ip, port);
+            new WorkspaceWindow(ip, port, false);
             dispose();
         });
 

@@ -25,4 +25,8 @@ public class Line extends Geometry {
     public Point getPointEnd() {
         return pointEnd;
     }
+
+    public String toString() {
+        return getType() + " [ " + pointStart + "->" + pointEnd + " ]";
+    }
 }

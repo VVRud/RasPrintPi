@@ -22,4 +22,8 @@ public class Point extends Geometry {
     public float getY() {
         return y;
     }
+
+    public String toString() {
+        return "{" + x + ";" + y + "}";
+    }
 }

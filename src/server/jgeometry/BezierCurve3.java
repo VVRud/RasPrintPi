@@ -37,4 +37,9 @@ public class BezierCurve3 extends Geometry {
     public Point getpFinish() {
         return pFinish;
     }
+
+    @Override
+    public String toString() {
+        return getType() + " [ " + pStart.toString() + "->" + p1 + "->" + p2 + "->" + pFinish + " ]";
+    }
 }

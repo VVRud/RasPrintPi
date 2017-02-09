@@ -148,7 +148,7 @@ public class Analyzer extends Thread {
                             "\t\t\t<xCoord>" + p2x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p2y + "</yCoord>\n" +
                                     "\t\t</point>\n");
-                } else if ((lxs >= 4 && lxs <= 28) && (lys >= 4 && lys <= 28)) {
+                } else if ((lxs >= 4 && lxs <= 30) && (lys >= 4 && lys <= 30)) {
                     int p0x = lx.get(0);
                     int p0y = ly.get(0);
                     int p1x = lx.get((lxs / 3) - 1);
@@ -176,7 +176,7 @@ public class Analyzer extends Thread {
                             "\t\t\t<xCoord>" + p3x + "</xCoord>\n" +
                             "\t\t\t<yCoord>" + p3y + "</yCoord>\n" +
                                     "\t\t</point>\n");
-                } else if (lxs > 28 && lys > 28) {
+                } else if (lxs > 30 && lys > 30) {
                     float num = ((float) lxs - 1) / 3;
                     int curves = 3;
 

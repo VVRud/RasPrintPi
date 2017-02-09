@@ -30,4 +30,8 @@ public class BezierCurve2 extends Geometry {
     public Point getpFinish() {
         return pFinish;
     }
+
+    public String toString() {
+        return getType() + " [ " + pStart + "->" + p1 + "->" + pFinish + " ]";
+    }
 }

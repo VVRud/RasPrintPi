@@ -22,8 +22,6 @@ public class Analyzer {
     private static int rowCount = 0;
     private static int columnCount = 0;
 
-    private static ArrayList<Point> pointList = new ArrayList<>();
-
     public static int getColumnCount() {
         return columnCount;
     }
@@ -87,50 +85,60 @@ public class Analyzer {
                         parse(file);
 
                 NodeList list = xmlDocument.getElementsByTagName("Element");
+                System.out.println("NORMAL CHECK\n________________________________________________");
                 for (int i = 0; i < list.getLength(); i++) {
                     Node nNode = list.item(i);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                        pointList.clear();
                         Element eElement = (Element) nNode;
                         String elementType = eElement.getChildNodes().item(1).getTextContent();
-                        switch (elementType) {
-                            case "Point":
-                                geometryList.add(createPoint(eElement));
-                                break;
-                            case "Line":
-                                createCurve(eElement);
-                                geometryList.add(new Line(pointList));
-                                break;
-                            case "BezierCurve2":
-                                createCurve(eElement);
-                                geometryList.add(new BezierCurve2(pointList));
-                                break;
-                            case "BezierCurve3":
-                                createCurve(eElement);
-                                geometryList.add(new BezierCurve3(pointList));
-                                break;
-                            case "BezierPath":
-                                createCurve(eElement);
-                                geometryList.add(new BezierPath(pointList));
-                                break;
-                            case "Options":
-                                String mode = ((Element) nNode).getElementsByTagName("mode")
-                                        .item(0)
-                                        .getTextContent();
-                                String intensity = ((Element) nNode).getElementsByTagName("intensity")
-                                        .item(0)
-                                        .getTextContent();
-                                String speed = ((Element) nNode).getElementsByTagName("speed")
-                                        .item(0)
-                                        .getTextContent();
-                                //TODO Save settings
-                                break;
+                        if (elementType.equals("Options")) {
+                            String mode = ((Element) nNode).getElementsByTagName("mode")
+                                    .item(0)
+                                    .getTextContent();
+                            String intensity = ((Element) nNode).getElementsByTagName("intensity")
+                                    .item(0)
+                                    .getTextContent();
+                            String speed = ((Element) nNode).getElementsByTagName("speed")
+                                    .item(0)
+                                    .getTextContent();
+                            //TODO Save settings
+
+                        } else {
+                            ArrayList<Point> pointList = createCurve(eElement);
+                            switch (elementType) {
+                                case "Point":
+                                    Point p = createPoint(eElement);
+                                    geometryList.add(p);
+                                    System.out.println(p.toString());
+                                    break;
+                                case "Line":
+                                    Line l = new Line(pointList);
+                                    System.out.println(l.toString());
+                                    geometryList.add(l);
+                                    break;
+                                case "BezierCurve2":
+                                    BezierCurve2 bc2 = new BezierCurve2(pointList);
+                                    geometryList.add(bc2);
+                                    System.out.println(bc2.toString());
+                                    break;
+                                case "BezierCurve3":
+                                    createCurve(eElement);
+                                    BezierCurve3 bc3 = new BezierCurve3(pointList);
+                                    geometryList.add(bc3);
+                                    System.out.println(bc3.toString());
+                                    break;
+                                case "BezierPath":
+                                    createCurve(eElement);
+                                    BezierPath bp = new BezierPath(pointList);
+                                    geometryList.add(bp);
+                                    System.out.println(bp.toString());
+                                    break;
+                            }
                         }
                     }
                 }
                 PrintingData.setGeometryList(new ArrayList<>(geometryList));
                 PrintingData.setFile(null);
-                geometryList.clear();
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -141,12 +149,14 @@ public class Analyzer {
         } else System.out.println("File is null!");
     }
 
-    private static void createCurve(Element eElement) {
+    private static ArrayList<Point> createCurve(Element eElement) {
+        ArrayList<Point> pointList = new ArrayList<>();
         NodeList nl = eElement.getElementsByTagName("point");
         for (int j = 0; j < nl.getLength(); j++) {
             Element e = (Element) nl.item(j);
             pointList.add(createPoint(e));
         }
+        return pointList;
     }
 
     private static Point createPoint(Element eElement) {
@@ -156,7 +166,7 @@ public class Analyzer {
         float y = Float.parseFloat(eElement.getElementsByTagName("yCoord")
                 .item(0)
                 .getTextContent());
-        return new server.jgeometry.Point(x, y);
+        return new Point(x, y);
     }
 
 }

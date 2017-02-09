@@ -42,7 +42,7 @@ public class WorkspaceWindow extends JFrame {
     private static JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private static JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
 
-    WorkspaceWindow(String ip, int port) {
+    WorkspaceWindow(String ip, int port, boolean sendActive) {
         super(TITLE + " | Opened on IP: " + ip + ":" + port);
 
         ActionListener actionListener = e -> {
@@ -72,7 +72,7 @@ public class WorkspaceWindow extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        //if (LoginWindow.getIp().equals("OFFLINE MODE")) startButton.setEnabled(false);
+        if (!sendActive) startButton.setEnabled(false);
         setVisible(true);
     }
 

@@ -27,4 +27,10 @@ public class BezierPath extends Geometry {
     public int getPathLength() {
         return points.size();
     }
+
+    public String toString() {
+        return getType() + "; PL=" + points.size() + "; " + points.get(0).toString() + " ->...-> " +
+                points.get((int) (points.size() / 2)).toString() + " ->...-> " +
+                points.get(points.size() - 1).toString();
+    }
 }

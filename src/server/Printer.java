@@ -23,6 +23,10 @@ public class Printer extends Thread {
 
     private static final int MOTOR_X = 0;
     private static final int MOTOR_Y = 1;
+    private static final int MOTOR_SPEED = 2;
+    private static final int MOTOR_Z_SPEED = 6;
+    private static final int MOTOR_Z_STEPS = 50;
+    private static final int MOTOR_Z_SLEEP = 300;
 
     private static final GpioPinDigitalOutput[] PINS_X = {
             gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, PinState.LOW),
@@ -151,6 +155,11 @@ public class Printer extends Thread {
                     return;
                 }
                 motorZDown();
+                try {
+                    sleep(MOTOR_Z_SLEEP);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 motorZUp();
             } else if (type.equals("Line")) {
                 Line l = (Line) draw;
@@ -245,9 +254,9 @@ public class Printer extends Thread {
         double_step_sequence[2] = (byte) 0b1100;
         double_step_sequence[3] = (byte) 0b1001;
 
-        motorX.setStepInterval(2);
-        motorY.setStepInterval(2);
-        motorZ.setStepInterval(2);
+        motorX.setStepInterval(MOTOR_SPEED);
+        motorY.setStepInterval(MOTOR_SPEED);
+        motorZ.setStepInterval(MOTOR_Z_SPEED);
 
         motorX.setStepSequence(double_step_sequence);
         motorY.setStepSequence(double_step_sequence);
@@ -266,12 +275,13 @@ public class Printer extends Thread {
     }
 
     private void motorZUp() {
-        motorZ.step(510);
+        motorZ.step(MOTOR_Z_STEPS);
         zUp = true;
     }
 
     private void motorZDown() {
-        motorZ.step(-510);
+        motorZ.step(-MOTOR_Z_STEPS);
+
         zUp = false;
     }
 
@@ -383,14 +393,14 @@ public class Printer extends Thread {
         float modDeltaX = Math.abs(deltaX);
         float modDeltaY = Math.abs(deltaY);
         if (modDeltaX < modDeltaY) {
-            motorY.setStepInterval(2);
-            float delay = (2 * modDeltaY) / modDeltaX;
+            motorY.setStepInterval(MOTOR_SPEED);
+            float delay = (MOTOR_SPEED * modDeltaY) / modDeltaX;
             int mod = (int) ((delay % (long) delay) * 1000000);
             System.out.println("DELAY: " + delay + " " + mod);
             motorX.setStepInterval((long) delay, mod);
         } else {
-            motorX.setStepInterval(2);
-            float delay = (2 * modDeltaX) / modDeltaY;
+            motorX.setStepInterval(MOTOR_SPEED);
+            float delay = (MOTOR_SPEED * modDeltaX) / modDeltaY;
             int mod = (int) ((delay % (long) delay) * 1000000);
             System.out.println("DELAY: " + delay + " " + mod);
             motorY.setStepInterval((long) delay, mod);

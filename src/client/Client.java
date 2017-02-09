@@ -32,15 +32,6 @@ public class Client {
     public static void main(String[] args) {
         new LoginWindow();
         Thread.yield();
-
-//        while (!LoginWindow.isConnectionSuccess()) {
-//            Thread.yield();
-//        }
-//
-//        loginWindow.setVisible(false);
-//        loginWindow = null;
-//
-//        new WorkspaceWindow();
     }
 
     public static void setSocket(Socket socket) {
