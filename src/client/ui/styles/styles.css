@@ -1,0 +1,34 @@
+.toggle-button {
+	-fx-background-insets: 2px;
+	-fx-border-color: #F8F8FF;
+	-fx-border-width: 2px;
+	-fx-border-radius: 2em;
+	-fx-background-color: #F0F0F0;
+	-fx-background-radius: 2em;
+	-fx-background-color: #FF6A6A;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 1, 0, 0, 1);
+}
+
+.toggle-button:selected {
+	-fx-background-color: #54FF9F;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 2.5, 0, 0, 1);
+	-fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0, 2.5, 2.5);
+}
+
+.error {
+	-fx-background-color: linear-gradient(to bottom, rgb(133,21,2) 0%, rgb(240,47,23) 60%, rgb(245,131,120) 100%);	
+}
+
+.error-title {
+	-fx-border-radius: 15px 15px 0px 0px;
+	-fx-border-color: #000;
+	-fx-background-radius: 15px 15px 0px 0px;
+	-fx-background-color: #fff;
+}
+
+.error-message {
+	-fx-border-radius: 0px 0px 15px 15px;
+	-fx-border-color: #000;
+	-fx-background-radius: 0px 0px 15px 15px;
+	-fx-background-color: #fff;
+}

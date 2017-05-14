@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" hgap="5.0" maxHeight="1.7976931348623157E308"
+          maxWidth="1.7976931348623157E308" vgap="5.0" xmlns="http://javafx.com/javafx/8"
+          fx:controller="client.ui.controllers.LoginWindowController">
+    <children>
+        <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+                maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#startWorkspace" text="DONE"
+                textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="5">
+            <font>
+                <Font size="14.0"/>
+            </font>
+            <GridPane.margin>
+                <Insets bottom="8.0" right="8.0"/>
+            </GridPane.margin>
+        </Button>
+        <Label contentDisplay="CENTER" lineSpacing="1.0" text="Enter server IP and PORT" textAlignment="CENTER"
+               GridPane.columnSpan="3">
+            <font>
+                <Font size="20.0"/>
+            </font>
+            <GridPane.margin>
+                <Insets left="8.0" right="8.0" top="8.0"/>
+            </GridPane.margin>
+        </Label>
+        <Label text="IP:" GridPane.rowIndex="2">
+            <font>
+                <Font size="16.0"/>
+            </font>
+            <GridPane.margin>
+                <Insets left="8.0"/>
+            </GridPane.margin>
+        </Label>
+        <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="1">
+            <effect>
+                <Lighting diffuseConstant="1.19" specularConstant="0.23" specularExponent="19.05" surfaceScale="2.81">
+                    <bumpInput>
+                        <Shadow color="#282323" height="51.36" radius="30.4925" width="72.61"/>
+                    </bumpInput>
+                    <light>
+                        <Light.Distant color="#e4dada"/>
+                    </light>
+                </Lighting>
+            </effect>
+        </Separator>
+        <Label text="PORT:" GridPane.rowIndex="3">
+            <font>
+                <Font size="16.0"/>
+            </font>
+            <GridPane.margin>
+                <Insets left="8.0"/>
+            </GridPane.margin>
+        </Label>
+        <TextField fx:id="ipField" promptText="IP here" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                   GridPane.rowIndex="2">
+            <GridPane.margin>
+                <Insets right="8.0"/>
+            </GridPane.margin>
+        </TextField>
+        <ToggleButton fx:id="offlineSwitcher" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@../styles/styles.css"
+                      text="OFFLINE" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1"
+                      GridPane.rowIndex="5">
+            <font>
+                <Font size="14.0"/>
+            </font>
+            <GridPane.margin>
+                <Insets bottom="8.0"/>
+            </GridPane.margin>
+        </ToggleButton>
+        <Separator layoutX="10.0" layoutY="49.0" prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="4">
+            <effect>
+                <Lighting diffuseConstant="1.19" specularConstant="0.23" specularExponent="19.05" surfaceScale="2.81">
+                    <bumpInput>
+                        <Shadow color="#282323" height="51.36" radius="30.4925" width="72.61"/>
+                    </bumpInput>
+                    <light>
+                        <Light.Distant color="#e4dada"/>
+                    </light>
+                </Lighting>
+            </effect>
+        </Separator>
+        <TextField fx:id="portField" promptText="PORT here" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+    </rowConstraints>
+</GridPane>

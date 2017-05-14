@@ -32,7 +32,6 @@ public class SenderClient extends Thread {
         boolean printingInterrupted = PrintingData.isPrintingInterrupted();
 
         DataOutputStream dataOutput = Client.getDataOutput();
-        ObjectOutputStream objectOutput = Client.getObjectOutput();
         if (printingInterrupted) {
             try {
                 dataOutput.writeInt(INTERRUPT);
@@ -43,7 +42,6 @@ public class SenderClient extends Thread {
         } else if (mode == JPG_MODE) {
             try {
                 dataOutput.writeInt(TXT);
-                sendOptions(objectOutput);
                 sendFile(dataOutput, TXT);
                 WorkspaceWindow.setInactiveTrue();
             } catch (IOException e) {

@@ -42,7 +42,7 @@ public class WorkspaceWindow extends JFrame {
     private static JComboBox<String> modeList = new JComboBox<>(MODE_DATA);
     private static JComboBox<String> intensityList = new JComboBox<>(INTENSITY_DATA);
 
-    WorkspaceWindow(String ip, int port, boolean sendActive) {
+    public WorkspaceWindow(String ip, int port, boolean sendActive) {
         super(TITLE + " | Opened on IP: " + ip + ":" + port);
 
         ActionListener actionListener = e -> {

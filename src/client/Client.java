@@ -6,8 +6,6 @@ import client.ui.LoginWindow;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -22,8 +20,6 @@ public class Client {
     private static Socket socket;
     private static DataOutputStream dataOutput;
     private static DataInputStream dataInput;
-    private static ObjectOutputStream objectOutput;
-    private static ObjectInputStream objectInput;
 
     private static SenderClient sender;
     private static ReceiverClient receiver;
@@ -52,22 +48,6 @@ public class Client {
 
     public static void setDataInput(DataInputStream dataInput) {
         Client.dataInput = dataInput;
-    }
-
-    public static ObjectOutputStream getObjectOutput() {
-        return objectOutput;
-    }
-
-    public static void setObjectOutput(ObjectOutputStream objectOutput) {
-        Client.objectOutput = objectOutput;
-    }
-
-    public static ObjectInputStream getObjectInput() {
-        return objectInput;
-    }
-
-    public static void setObjectInput(ObjectInputStream objectInput) {
-        Client.objectInput = objectInput;
     }
 
     public static SenderClient getSender() {

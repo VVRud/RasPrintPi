@@ -11,7 +11,6 @@ import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -71,7 +70,6 @@ public class LoginWindow extends JFrame {
 
                     Client.setDataOutput(dataOutput);
                     Client.setDataInput(dataInput);
-                    Client.setObjectOutput(new ObjectOutputStream(dataOutput));
                     new WorkspaceWindow(ip, port, true);
                     dispose();
                 } catch (UnknownHostException hostErr) {

@@ -25,6 +25,10 @@ public class Constants {
     public static final int BEZ_MODE = 1;
     public static final int JPG_MODE = 2;
 
+    public static final int ERROR = 0;
+    public static final int WARNING = 1;
+    public static final int MESSAGE = 2;
+
     //Errors
     public static final String ERR_TITLE = "ERROR!";
     public static final String IP_ERR = "ERROR! Can't connect to server. Check your IP, please.";
