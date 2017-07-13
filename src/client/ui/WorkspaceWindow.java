@@ -36,6 +36,7 @@ public class WorkspaceWindow extends JFrame {
     private static JButton stopButton;
     private static JButton saveFileButton;
     private static JButton clearButton;
+    private static JButton bleachButton;
     private static DrawArea drawArea;
 
     private static JComboBox<String> speedList = new JComboBox<>(SPEED_DATA);
@@ -56,6 +57,8 @@ public class WorkspaceWindow extends JFrame {
                 saveFile();
             } else if (e.getSource() == clearButton) {
                 drawArea.clear();
+            } else if (e.getSource() == bleachButton) {
+                drawArea.bleachPicture();
             }
         };
 
@@ -185,6 +188,7 @@ public class WorkspaceWindow extends JFrame {
                             BufferedImage in = ImageIO.read(file);
                             drawArea.drawChosenImage(in);
                             PrintingData.setJpgFileChosen(file);
+
                         } catch (IOException e) {
                             System.out.println("Failed reading image");
                             e.printStackTrace();
@@ -206,6 +210,7 @@ public class WorkspaceWindow extends JFrame {
             }
             fileDir.setText(fName);
         }
+
     }
 
     private String reduceString(String fName) {
@@ -272,7 +277,7 @@ public class WorkspaceWindow extends JFrame {
         drawArea = new DrawArea();
         drawArea.setPreferredSize(DRAWING_AREA_SIZE);
         drawArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 12,
+        workPanel.add(drawArea, new GridBagConstraints(0, 0, 1, 13,
                 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
     }
@@ -284,7 +289,7 @@ public class WorkspaceWindow extends JFrame {
         progressBar.setValue(100);
         //TODO Изменение значение по количеству отпечатанных "символов"
 
-        workPanel.add(progressBar, new GridBagConstraints(0, 12, 1, 1, 0, 0, GridBagConstraints.WEST,
+        workPanel.add(progressBar, new GridBagConstraints(0, 13, 1, 1, 0, 0, GridBagConstraints.WEST,
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
     }
 
@@ -295,12 +300,14 @@ public class WorkspaceWindow extends JFrame {
         stopButton = new JButton("STOP");
         saveFileButton = new JButton("SAVE");
         clearButton = new JButton("CLEAR");
+        bleachButton = new JButton("BLEACH PICTURE");
 
         chooseFileButton.addActionListener(actionListener);
         startButton.addActionListener(actionListener);
         stopButton.addActionListener(actionListener);
         saveFileButton.addActionListener(actionListener);
         clearButton.addActionListener(actionListener);
+        bleachButton.addActionListener(actionListener);
 
         JLabel speedLabel = new JLabel("Printing speed");
         JLabel modeLabel = new JLabel("Printing mode");
@@ -340,12 +347,14 @@ public class WorkspaceWindow extends JFrame {
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
         workPanel.add(clearButton, new GridBagConstraints(2, 10, 1, 1, 0, 0, GridBagConstraints.SOUTH,
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
-
-        workPanel.add(startStopLabel, new GridBagConstraints(1, 11, 2, 1, 0, 0, GridBagConstraints.SOUTH,
-                GridBagConstraints.SOUTH, new Insets(0, 5, 5, 5), 0, 0));
-        workPanel.add(startButton, new GridBagConstraints(1, 12, 1, 1, 0, 0, GridBagConstraints.SOUTH,
+        workPanel.add(bleachButton, new GridBagConstraints(1, 11, 2, 1, 0, 0, GridBagConstraints.SOUTH,
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
-        workPanel.add(stopButton, new GridBagConstraints(2, 12, 1, 1, 0, 0, GridBagConstraints.SOUTH,
+
+        workPanel.add(startStopLabel, new GridBagConstraints(1, 12, 2, 1, 0, 0, GridBagConstraints.SOUTH,
+                GridBagConstraints.SOUTH, new Insets(0, 5, 5, 5), 0, 0));
+        workPanel.add(startButton, new GridBagConstraints(1, 13, 1, 1, 0, 0, GridBagConstraints.SOUTH,
+                GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
+        workPanel.add(stopButton, new GridBagConstraints(2, 13, 1, 1, 0, 0, GridBagConstraints.SOUTH,
                 GridBagConstraints.BOTH, new Insets(0, 5, 5, 5), 0, 0));
         stopButton.setEnabled(false);
 

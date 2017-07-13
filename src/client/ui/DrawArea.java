@@ -185,4 +185,29 @@ class DrawArea extends JComponent {
             e.printStackTrace();
         }
     }
+
+    void bleachPicture() {
+        BufferedImage bufferedImage = (BufferedImage) image;
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Color color = new Color(bufferedImage.getRGB(x, y), true);
+                int myGrey = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+                Color myColor = new Color(myGrey, myGrey, myGrey, 0);
+                bufferedImage.setRGB(x, y, myColor.getRGB());
+            }
+        }
+
+        try {
+            File imgFile = File.createTempFile("jpg_rpp_", "jpg");
+            ImageIO.write(bufferedImage, "jpg", imgFile);
+            PrintingData.setJpgFileCreated(imgFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        repaint();
+    }
 }
