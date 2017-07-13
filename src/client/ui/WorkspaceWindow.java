@@ -199,8 +199,20 @@ public class WorkspaceWindow extends JFrame {
                 }
             } else showErrorMessage(CHOOSING_FILE_ERR);
 
-            fileDir.setText(file.getName());
+            String fName = file.getName();
+
+            if (fName.length() > 15) {
+                fName = reduceString(fName);
+            }
+            fileDir.setText(fName);
         }
+    }
+
+    private String reduceString(String fName) {
+        int length = fName.length();
+        String begin = fName.substring(0, 7);
+        String end = fName.substring(length - 7, length);
+        return begin + "..." + end;
     }
 
     private void stopPrinting() {

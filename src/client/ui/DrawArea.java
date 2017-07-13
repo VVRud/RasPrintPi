@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static client.data.Constants.AREA_HEIGHT;
+import static client.data.Constants.AREA_WIDTH;
+
 /**
  * Created by vvrud on 14.11.16.
  *
@@ -115,11 +118,11 @@ class DrawArea extends JComponent {
         int width = 0;
         int height = 0;
         if (imgWidth > imgHeight) {
-            width = 420;
-            height = (imgHeight * 420) / imgWidth;
+            width = AREA_WIDTH;
+            height = (imgHeight * AREA_WIDTH) / imgWidth;
         } else if (imgHeight > imgWidth) {
-            height = 420;
-            width = (420 * imgWidth) / imgHeight;
+            height = AREA_HEIGHT;
+            width = (imgWidth * AREA_HEIGHT) / imgHeight;
         } else if (imgHeight == imgWidth) {
             width = imgWidth;
             height = imgHeight;
